@@ -1,0 +1,8 @@
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\Engine2.exe.config
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\Engine2.exe
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\Engine2.pdb
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\OpenTK.dll
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\OpenTK.xml
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.csprojResolveAssemblyReference.cache
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.exe
+c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.pdb
