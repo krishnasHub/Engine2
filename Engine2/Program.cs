@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 using OpenTK;
 
+using Engine2.Core;
+
+
+// https://www.youtube.com/watch?v=SZuPxXAkfyA
+
 namespace Engine2
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var g = new GameWindow(800, 600);
+            var g = new Game(1280, 960);
+            // tile_wall.jpg
 
             g.Run();
         }

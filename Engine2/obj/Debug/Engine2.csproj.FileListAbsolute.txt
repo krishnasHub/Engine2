@@ -6,3 +6,5 @@ c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\bin\Debug\O
 c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.csprojResolveAssemblyReference.cache
 c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.exe
 c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.pdb
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\bin\Debug\Content\tile_grass.png
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\bin\Debug\Content\tile_wall.jpg
