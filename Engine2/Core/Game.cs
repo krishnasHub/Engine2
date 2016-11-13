@@ -14,12 +14,13 @@ namespace Engine2.Core
 {
     class Game : GameWindow
     {
-
+        View view;
         Texture2D t1, t2;
 
         public Game(int width, int height) : base(width, height)
         {
             GL.Enable(EnableCap.Texture2D);
+            view = new View(Vector2.Zero, 0.0f, 0.5f);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -34,6 +35,8 @@ namespace Engine2.Core
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+
+            view.Update();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -42,6 +45,9 @@ namespace Engine2.Core
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
+
+            GL.LoadIdentity();
+            view.ApplyTransform();
 
             GL.BindTexture(TextureTarget.Texture2D, t1.Id);
             GL.Begin(PrimitiveType.Quads);
