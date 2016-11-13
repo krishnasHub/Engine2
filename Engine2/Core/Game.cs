@@ -15,8 +15,12 @@ namespace Engine2.Core
 {
     class Game : GameWindow
     {
+        public static int GridSize = 32, TileSize = 128;
+
         View view;
         Texture2D t1, t2;
+        Texture2D tileSet;
+        Level level;
 
         public Game(int width, int height) : base(width, height)
         {
@@ -31,6 +35,9 @@ namespace Engine2.Core
 
             t1 = ContentLoader.LoadTexture("tile_wall.jpg");
             t2 = ContentLoader.LoadTexture("tile_grass.png");
+
+            tileSet = ContentLoader.LoadTexture("tile_set1.png");
+            level = new Level(100, 100);
 
         }
 
@@ -77,8 +84,37 @@ namespace Engine2.Core
             SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
             SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
 
+            for (int x = 0; x < level.Width; x++)
+            {
+                for (int y = 0; y < level.Height; y++)
+                {
+                    RectangleF source = new RectangleF(0, 0, 0, 0);
 
-            this.SwapBuffers();
+                    switch(level[x, y].Type)
+                    {
+                        case BlockType.Ladder:
+                            source = new RectangleF(2 * TileSize, 0 * TileSize, TileSize, TileSize);
+                            break;
+
+                        case BlockType.LadderPlatform:
+                            source = new RectangleF(3 * TileSize, 0 * TileSize, TileSize, TileSize);
+                            break;
+
+                        case BlockType.Solid:
+                            source = new RectangleF(1 * TileSize, 0 * TileSize, TileSize, TileSize);
+                            break;
+
+                        case BlockType.Platform:
+                            source = new RectangleF(0 * TileSize, 1 * TileSize, TileSize, TileSize);
+                            break;
+                    }
+
+                    SpriteBatch.Draw(tileSet, new Vector2(x * GridSize, y * GridSize),
+                        new Vector2((float)GridSize / TileSize), Color.White, Vector2.Zero, source);
+                }
+            }
+
+                    this.SwapBuffers();
         }
     }
 }

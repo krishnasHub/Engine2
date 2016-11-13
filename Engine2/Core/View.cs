@@ -55,7 +55,7 @@ namespace Engine2.Core
             return (this.position + (dx * input.X) + (dy * input.Y));
         }
 
-        public View(Vector2 startPosition, float startRotation = 0.0f, float startZoom = 0.0f)
+        public View(Vector2 startPosition, float startRotation = 0.0f, float startZoom = 1f)
         {
             position = startPosition;
             rotation = startRotation;

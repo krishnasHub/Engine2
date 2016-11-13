@@ -14,7 +14,7 @@ namespace Engine2.Core
     public class SpriteBatch
     {
 
-        public static void Draw(Texture2D texture, Vector2 position, Vector2 scale, Color color, Vector2 origin)
+        public static void Draw(Texture2D texture, Vector2 position, Vector2 scale, Color color, Vector2 origin, RectangleF? sourceRec = null)
         {
             Vector2[] vertices = new Vector2[]
             {
@@ -30,10 +30,16 @@ namespace Engine2.Core
 
             for(int i = 0; i < vertices.Length; i++)
             {
-                GL.TexCoord2(vertices[i]);
+                if(sourceRec == null)
+                    GL.TexCoord2(vertices[i]);
+                else
+                {
+                    GL.TexCoord2( (sourceRec.Value.Left + vertices[i].X * sourceRec.Value.Width) / texture.Width,
+                        (sourceRec.Value.Top + vertices[i].Y * sourceRec.Value.Height) / texture.Height);
+                }
 
-                vertices[i].X *= texture.Width;
-                vertices[i].Y *= texture.Height;
+                vertices[i].X *= sourceRec == null ? texture.Width : sourceRec.Value.Width;
+                vertices[i].Y *= sourceRec == null ? texture.Height : sourceRec.Value.Height; ;
 
                 vertices[i] -= origin;
                 vertices[i] *= scale;
