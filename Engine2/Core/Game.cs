@@ -46,55 +46,12 @@ namespace Engine2.Core
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
 
-            GL.LoadIdentity();
+            SpriteBatch.Begin(this.Width, this.Height);
             view.ApplyTransform();
 
-            GL.BindTexture(TextureTarget.Texture2D, t1.Id);
-            GL.Begin(PrimitiveType.Quads);
-
-            GL.Color3(Color.Red);
-            GL.TexCoord2(0, 0);
-            GL.Vertex2(0, 0);
-
-            GL.Color3(Color.Black);
-            GL.TexCoord2(1, 0);
-            GL.Vertex2(1, 0);
-
-            GL.Color3(Color.Green);
-            GL.TexCoord2(1, 1);
-            GL.Vertex2(1, -1);
-
-            GL.Color3(Color.Yellow);
-            GL.TexCoord2(0, 1);
-            GL.Vertex2(0, -1);
-
-            GL.End();
-
-
-
-
-
-
-            GL.BindTexture(TextureTarget.Texture2D, t2.Id);
-            GL.Begin(PrimitiveType.Quads);
-
-            GL.Color3(Color.Red);
-            GL.TexCoord2(0, 0);
-            GL.Vertex2(-0.5f, 0.5f);
-
-            GL.Color3(Color.Black);
-            GL.TexCoord2(1, 0);
-            GL.Vertex2(0.5f, 0.5f);
-
-            GL.Color3(Color.Green);
-            GL.TexCoord2(1, 1);
-            GL.Vertex2(0.5f, -0.5f);
-
-            GL.Color3(Color.Yellow);
-            GL.TexCoord2(0, 1);
-            GL.Vertex2(-0.5f, -0.5f);
-
-            GL.End();
+            SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
+            SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
+            
 
             this.SwapBuffers();
         }
