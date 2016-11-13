@@ -21,6 +21,17 @@ namespace Engine2.Core
         {
             GL.Enable(EnableCap.Texture2D);
             view = new View(Vector2.Zero, 0.0f, 0.5f);
+
+            Mouse.ButtonDown += Mouse_ButtonDown;
+        }
+
+        private void Mouse_ButtonDown(object sender, OpenTK.Input.MouseButtonEventArgs e)
+        {
+            Vector2 pos = new Vector2(e.Position.X, e.Position.Y);
+            pos -= new Vector2(this.Width, this.Height) / 2f;
+            pos = view.ToWorld(pos);
+
+            view.SetPosition(pos, TweenType.QuarticOut, 120);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -51,7 +62,7 @@ namespace Engine2.Core
 
             SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
             SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
-            
+
 
             this.SwapBuffers();
         }
