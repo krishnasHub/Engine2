@@ -41,6 +41,10 @@ namespace Engine2.Core
         {
             get { return this.position; }
         }
+        public Vector2 PositionGoTo
+        {
+            get { return this.positionGoTo; }
+        }
 
         public Vector2 ToWorld(Vector2 input)
         {

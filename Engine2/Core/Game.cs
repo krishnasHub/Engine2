@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using Engine2.Util;
 using Engine2.Texture;
+using Engine2.Input;
 
 namespace Engine2.Core
 {
@@ -21,17 +22,7 @@ namespace Engine2.Core
         {
             GL.Enable(EnableCap.Texture2D);
             view = new View(Vector2.Zero, 0.0f, 0.5f);
-
-            Mouse.ButtonDown += Mouse_ButtonDown;
-        }
-
-        private void Mouse_ButtonDown(object sender, OpenTK.Input.MouseButtonEventArgs e)
-        {
-            Vector2 pos = new Vector2(e.Position.X, e.Position.Y);
-            pos -= new Vector2(this.Width, this.Height) / 2f;
-            pos = view.ToWorld(pos);
-
-            view.SetPosition(pos, TweenType.QuarticOut, 120);
+            GameInput.Initialize(this);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -47,7 +38,30 @@ namespace Engine2.Core
         {
             base.OnUpdateFrame(e);
 
+            if(GameInput.MouseButtonPress(OpenTK.Input.MouseButton.Left))
+            {
+                Vector2 pos = new Vector2(Mouse.X, Mouse.Y);
+                pos -= new Vector2(this.Width, this.Height) / 2f;
+                pos = view.ToWorld(pos);
+
+                view.SetPosition(pos, TweenType.QuarticOut, 120);
+            }
+
+            if(GameInput.KeyPress(OpenTK.Input.Key.Right))            
+                view.SetPosition(view.PositionGoTo + new Vector2(5, 0), TweenType.QuarticOut, 120);
+
+            if (GameInput.KeyPress(OpenTK.Input.Key.Left))
+                view.SetPosition(view.PositionGoTo + new Vector2(-5, 0), TweenType.QuarticOut, 120);
+
+            if (GameInput.KeyPress(OpenTK.Input.Key.Up))
+                view.SetPosition(view.PositionGoTo + new Vector2(0, -5), TweenType.QuarticOut, 120);
+
+            if (GameInput.KeyPress(OpenTK.Input.Key.Down))
+                view.SetPosition(view.PositionGoTo + new Vector2(0, 5), TweenType.QuarticOut, 120);
+
+
             view.Update();
+            GameInput.Update();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
