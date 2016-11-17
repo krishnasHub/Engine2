@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 using OpenTK;
 using System.Drawing;
-using System.IO;
-using System.Xml;
 
 namespace Engine2.Core
 {
@@ -35,13 +33,11 @@ namespace Engine2.Core
             get { return grid.GetLength(1); }
         }
 
-        public Level(int w, int h)
+        public Level(int w, int h, string fileName = "none")
         {
             grid = new Block[w, h];
-            fileName = "none";
+            this.fileName = fileName;
             PlayerStartPos = new Point(1, 1);
-
-            LoadDefault(w, h);
         }
 
         private void LoadDefault(int w, int h)
@@ -58,66 +54,9 @@ namespace Engine2.Core
             }
         }
 
-        public Level(string filePath)
+        public void SetBlock(int x, int y, BlockType type)
         {
-            try
-            {
-                fileName = filePath;
-
-
-                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(fs);
-
-                    int w = int.Parse(doc.DocumentElement.GetAttribute("width"));
-                    int h = int.Parse(doc.DocumentElement.GetAttribute("height"));
-
-                    grid = new Block[w, h];
-                    PlayerStartPos = new Point(1, 1);
-
-                    XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer 1']");
-                    var tiles = tileLayer.SelectSingleNode("data").InnerText.Trim().Split(',');
-
-                    {
-                        int i = 0;
-                        for (int y = 0; y < h; ++y)
-                            for (int x = 0; x < w; x++)                            
-                            {
-                                int gid = int.Parse(tiles[i]);
-
-                                switch(gid)
-                                {
-                                    case 2:
-                                        grid[x, y] = new Block(BlockType.Solid, x, y);
-                                        break;
-                                    case 3:
-                                        grid[x, y] = new Block(BlockType.Ladder, x, y);
-                                        break;
-                                    case 4:
-                                        grid[x, y] = new Block(BlockType.LadderPlatform, x, y);
-                                        break;
-                                    case 5:
-                                        grid[x, y] = new Block(BlockType.Platform, x, y);
-                                        break;
-
-                                    default:
-                                        grid[x, y] = new Block(BlockType.Empty, x, y);
-                                        break;
-                                }
-                                i++;
-                            }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                grid = new Block[100, 100];
-                fileName = "none";
-                PlayerStartPos = new Point(1, 1);
-
-                LoadDefault(100, 100);
-            }
+            grid[x, y] = new Block(type, x, y);
         }
     }
 

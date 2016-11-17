@@ -11,6 +11,8 @@ using System.Drawing.Imaging;
 using System.IO;
 
 using Engine2.Texture;
+using Engine2.Core;
+using System.Xml;
 
 namespace Engine2.Util
 {
@@ -46,6 +48,81 @@ namespace Engine2.Util
             //GL.End();
 
             return new Texture2D(id, bmp.Width, bmp.Height);
+        }
+
+        public static Level LoadLevel(string path)
+        {
+
+            var filePath = RootFolder + "/" + path;
+            Level level;
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(fs);
+
+                int w = int.Parse(doc.DocumentElement.GetAttribute("width"));
+                int h = int.Parse(doc.DocumentElement.GetAttribute("height"));
+
+                level = new Level(w, h, filePath);
+
+                XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer 1']");
+                var tiles = tileLayer.SelectSingleNode("data").InnerText.Trim().Split(',');
+
+                {
+                    int i = 0;
+                    for (int y = 0; y < h; ++y)
+                        for (int x = 0; x < w; x++)
+                        {
+                            int gid = int.Parse(tiles[i]);
+
+                            switch (gid)
+                            {
+                                case 2:
+                                    level.SetBlock(x, y, BlockType.Solid);
+                                    break;
+                                case 3:
+                                    level.SetBlock(x, y, BlockType.Ladder);
+                                    break;
+                                case 4:
+                                    level.SetBlock(x, y, BlockType.LadderPlatform);
+                                    break;
+                                case 5:
+                                    level.SetBlock(x, y, BlockType.Platform);
+                                    break;
+
+                                default:
+                                    level.SetBlock(x, y, BlockType.Empty);
+                                    break;
+                            }
+                            i++;
+                        }
+                }
+
+                XmlNode objLayer = doc.DocumentElement.SelectSingleNode("objectgroup[@name='Object Layer 1']");
+                var objects = objLayer.SelectNodes("object");
+                
+                 
+                for(int i = 0; i < objects.Count; ++i)
+                {
+                    int xPos = (int)float.Parse(objects[i].Attributes["x"].Value);
+                    int yPos = (int)float.Parse(objects[i].Attributes["y"].Value);
+                    string objName = objects[i].Attributes["name"].Value;
+
+                    switch(objName)
+                    {
+                        case "playerStartPos":
+                            level.PlayerStartPos = new Point((int)(xPos / (float)Constants.TILE_SIZE), (int)(yPos / (float)Constants.TILE_SIZE));
+                            break;
+
+                        default:
+                            break;
+                    }
+                }           
+
+            }
+
+            return level;
         }
     }
 }
