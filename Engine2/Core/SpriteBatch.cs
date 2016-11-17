@@ -39,7 +39,7 @@ namespace Engine2.Core
                 }
 
                 vertices[i].X *= sourceRec == null ? texture.Width : sourceRec.Value.Width;
-                vertices[i].Y *= sourceRec == null ? texture.Height : sourceRec.Value.Height; ;
+                vertices[i].Y *= sourceRec == null ? texture.Height : sourceRec.Value.Height;
 
                 vertices[i] -= origin;
                 vertices[i] *= scale;

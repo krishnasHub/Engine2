@@ -25,7 +25,7 @@ namespace Engine2.Core
         public Game(int width, int height) : base(width, height)
         {
             GL.Enable(EnableCap.Texture2D);
-            view = new View(Vector2.Zero, 0.0f, 0.5f);
+            view = new View(Vector2.Zero, 0.0f, 2f);
             GameInput.Initialize(this);
         }
 
@@ -37,7 +37,7 @@ namespace Engine2.Core
             t2 = ContentLoader.LoadTexture("tile_grass.png");
 
             tileSet = ContentLoader.LoadTexture("tile_set1.png");
-            level = new Level(100, 100);
+            level = new Level("Content/Level1.tmx");
 
         }
 
