@@ -69,32 +69,14 @@ namespace Engine2.Util
                 XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer 1']");
                 var tiles = tileLayer.SelectSingleNode("data").InnerText.Trim().Split(',');
 
+                // just added this block.. nothing to it. Please ignore that I did..
                 {
                     int i = 0;
                     for (int y = 0; y < h; ++y)
                         for (int x = 0; x < w; x++)
                         {
                             int gid = int.Parse(tiles[i]);
-
-                            switch (gid)
-                            {
-                                case 2:
-                                    level.SetBlock(x, y, BlockType.Solid);
-                                    break;
-                                case 3:
-                                    level.SetBlock(x, y, BlockType.Ladder);
-                                    break;
-                                case 4:
-                                    level.SetBlock(x, y, BlockType.LadderPlatform);
-                                    break;
-                                case 5:
-                                    level.SetBlock(x, y, BlockType.Platform);
-                                    break;
-
-                                default:
-                                    level.SetBlock(x, y, BlockType.Empty);
-                                    break;
-                            }
+                            level.SetBlock(x, y, gid);
                             i++;
                         }
                 }

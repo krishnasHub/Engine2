@@ -84,37 +84,9 @@ namespace Engine2.Core
             SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
             SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
 
-            for (int x = 0; x < level.Width; x++)
-            {
-                for (int y = 0; y < level.Height; y++)
-                {
-                    RectangleF source = new RectangleF(0, 0, 0, 0);
+            level.Render(tileSet);
 
-                    switch(level[x, y].Type)
-                    {
-                        case BlockType.Ladder:
-                            source = new RectangleF(2 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                            break;
-
-                        case BlockType.LadderPlatform:
-                            source = new RectangleF(3 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                            break;
-
-                        case BlockType.Solid:
-                            source = new RectangleF(1 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                            break;
-
-                        case BlockType.Platform:
-                            source = new RectangleF(0 * Constants.TILE_SIZE, 1 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
-                            break;
-                    }
-
-                    SpriteBatch.Draw(tileSet, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
-                        new Vector2((float)Constants.GRID_SIZE / Constants.TILE_SIZE), Color.White, Vector2.Zero, source);
-                }
-            }
-
-                    this.SwapBuffers();
+            this.SwapBuffers();
         }
     }
 }

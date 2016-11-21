@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 using OpenTK;
 using System.Drawing;
+using Engine2.Util;
+using Engine2.Texture;
 
 namespace Engine2.Core
 {
-    public struct Level
+    public class Level
     {
         private Block[,] grid;
         private string fileName;
@@ -47,67 +49,75 @@ namespace Engine2.Core
                 for (int y = 0; y < h; y++)
                 {
                     if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
-                        grid[x, y] = new Block(BlockType.Solid, x, y);
+                        grid[x, y] = new Block(1, x, y);
                     else
-                        grid[x, y] = new Block(BlockType.Empty, x, y);
+                        grid[x, y] = new Block(0, x, y);
                 }
             }
         }
 
-        public void SetBlock(int x, int y, BlockType type)
+        public void SetBlock(int x, int y, int type)
         {
             grid[x, y] = new Block(type, x, y);
+        }
+
+        public void Render(Texture2D tileSet)
+        {
+            for (int x = 0; x < this.Width; x++)
+            {
+                for (int y = 0; y < this.Height; y++)
+                {
+                    RectangleF source;
+
+                    switch (this[x, y].Type)
+                    {
+                        case 2:
+                            source = new RectangleF(1 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                            break;
+
+                        case 3:
+                            source = new RectangleF(2 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                            break;
+
+                        case 4:
+                            source = new RectangleF(3 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                            break;
+
+                        case 1:
+                            source = new RectangleF(0 * Constants.TILE_SIZE, 0 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                            break;
+
+                        case 5:
+                            source = new RectangleF(0 * Constants.TILE_SIZE, 1 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE);
+                            break;
+
+                        default:
+                            source = new RectangleF(0, 0, 0, 0);
+                            break;
+                    }
+
+                    if(source != null)
+                        SpriteBatch.Draw(tileSet, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
+                            new Vector2((float)Constants.GRID_SIZE / Constants.TILE_SIZE), Color.White, Vector2.Zero, source);
+                }
+            }
         }
     }
 
 
-    public enum BlockType
-    {
-        Solid,
-        Empty,
-        Platform,
-        Ladder,
-        LadderPlatform
-    }
-
     public struct Block
     {
-        private BlockType type;
+        private int type;
         private int posX, posY;
-        private bool solid, platform, ladder;
 
-        public Block(BlockType type, int x, int y)
+        public Block(int type, int x, int y)
         {
             this.type = type;
             this.posX = x;
             this.posY = y;
-
-            solid = false;
-            platform = false;
-            ladder = false;
-
-            switch(type)
-            {
-                case BlockType.Solid:
-                    solid = true;
-                    break;
-
-                case BlockType.Platform:
-                    platform = true;
-                    break;
-
-                case BlockType.Ladder:
-                    ladder = true;
-                    break;
-
-                case BlockType.LadderPlatform:
-                    platform = true;
-                    ladder = true;
-                    break;
-            }
         }
 
-        public BlockType Type
+        public int Type
         {
             get { return type; }
         }
@@ -120,21 +130,6 @@ namespace Engine2.Core
         public int Y
         {
             get { return posY; }
-        }
-
-        public bool IsSolid
-        {
-            get { return solid; }
-        }
-
-        public bool IsPlatform
-        {
-            get { return platform; }
-        }
-
-        public bool IsLadder
-        {
-            get { return ladder; }
         }
     }
 }
