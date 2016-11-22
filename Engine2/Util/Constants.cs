@@ -11,5 +11,7 @@ namespace Engine2.Util
         public static int GRID_SIZE = 32;
         public static int TILE_SIZE = 128;
         public static int TWEEN_SPEED = 200;
+
+        public static string RootFolder = "Content";
     }
 }

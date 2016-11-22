@@ -11,57 +11,14 @@ using Engine2.Texture;
 
 namespace Engine2.Core
 {
-    public class Level
+    public class Level : GameLevel
     {
-        private Block[,] grid;
-        private string fileName;
-        public Point PlayerStartPos;
-
-        public Block this[int x, int y]
+        public Level(string levelFileName, string tileSetName) : base (levelFileName, tileSetName)
         {
-            get { return grid[x, y]; }
-            set { grid[x, y] = value; }
-        }
-        public string FileName
-        {
-            get { return fileName; }
-        }
-        public int Width
-        {
-            get { return grid.GetLength(0); }
-        }
-        public int Height
-        {
-            get { return grid.GetLength(1); }
-        }
-
-        public Level(int w, int h, string fileName = "none")
-        {
-            grid = new Block[w, h];
-            this.fileName = fileName;
-            PlayerStartPos = new Point(1, 1);
-        }
-
-        private void LoadDefault(int w, int h)
-        {
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    if (x == 0 || y == 0 || x == w - 1 || y == h - 1)
-                        grid[x, y] = new Block(1, x, y);
-                    else
-                        grid[x, y] = new Block(0, x, y);
-                }
-            }
-        }
-
-        public void SetBlock(int x, int y, int type)
-        {
-            grid[x, y] = new Block(type, x, y);
-        }
-
-        public void Render(Texture2D tileSet)
+            // Nothing as of now..
+        } 
+        
+        public override void Render()
         {
             for (int x = 0; x < this.Width; x++)
             {
@@ -105,31 +62,5 @@ namespace Engine2.Core
     }
 
 
-    public struct Block
-    {
-        private int type;
-        private int posX, posY;
-
-        public Block(int type, int x, int y)
-        {
-            this.type = type;
-            this.posX = x;
-            this.posY = y;
-        }
-
-        public int Type
-        {
-            get { return type; }
-        }
-
-        public int X
-        {
-            get { return posX; }
-        }
-
-        public int Y
-        {
-            get { return posY; }
-        }
-    }
+    
 }

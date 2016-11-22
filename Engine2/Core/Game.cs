@@ -19,8 +19,8 @@ namespace Engine2.Core
 
         View view;
         Texture2D t1, t2;
-        Texture2D tileSet;
-        Level level;
+        //Texture2D tileSet;
+        GameLevel level;
 
         public Game(int width, int height) : base(width, height)
         {
@@ -36,8 +36,8 @@ namespace Engine2.Core
             t1 = ContentLoader.LoadTexture("tile_wall.jpg");
             t2 = ContentLoader.LoadTexture("tile_grass.png");
 
-            tileSet = ContentLoader.LoadTexture("tile_set1.png");
-            level = ContentLoader.LoadLevel("Level1.tmx");
+            //tileSet = ContentLoader.LoadTexture("tile_set1.png");
+            level = new Level("Level1.tmx", "tile_set1.png");
             view.SetPosition(new Vector2(level.PlayerStartPos.X, level.PlayerStartPos.Y), TweenType.QuarticOut, Constants.TWEEN_SPEED);
         }
 
@@ -84,7 +84,7 @@ namespace Engine2.Core
             SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
             SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
 
-            level.Render(tileSet);
+            level.Render();
 
             this.SwapBuffers();
         }

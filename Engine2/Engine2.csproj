@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Game.cs" />
+    <Compile Include="Core\GameLevel.cs" />
     <Compile Include="Core\Level.cs" />
     <Compile Include="Core\SpriteBatch.cs" />
     <Compile Include="Core\View.cs" />
