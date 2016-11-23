@@ -31,7 +31,8 @@ namespace Engine2.Core
         public Game(int width, int height) : base(width, height)
         {
             GL.Enable(EnableCap.Texture2D);
-            view = new View(Vector2.Zero, 0.0f, 2f);
+            view = new View(Vector2.Zero, 0.0f, 0.75f);
+            WorldSettings.View = view;
             GameInput.Initialize(this);
         }
 
@@ -42,6 +43,7 @@ namespace Engine2.Core
                 TweenType.QuarticOut, Constants.TWEEN_SPEED);
 
             isLoaded = true;
+            level.Init();
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -72,6 +74,7 @@ namespace Engine2.Core
 
             view.Update();
             GameInput.Update();
+            level.Tick();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

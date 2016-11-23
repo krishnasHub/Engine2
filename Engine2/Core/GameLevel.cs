@@ -1,4 +1,5 @@
-﻿using Engine2.Texture;
+﻿using Engine2.Actor;
+using Engine2.Texture;
 using Engine2.Util;
 using OpenTK;
 using System;
@@ -18,9 +19,12 @@ namespace Engine2.Core
         protected string fileName;
         public Point PlayerStartPos;
         protected Texture2D tileSet;
+        protected List<GameActor> actors;
 
         protected Vector2 tileSize;
         protected int blocksInRow;
+
+        protected Dictionary<int, IBlockPhysics> gridPhysicsMap;
 
         public Block this[int x, int y]
         {
@@ -42,6 +46,26 @@ namespace Engine2.Core
         public Texture2D TileSet
         {
             get { return tileSet; }
+        }
+        public List<GameActor> Actors
+        {
+            get { return actors; }
+        }
+
+        public void SetBlockPhysics(int blockType, IBlockPhysics blockPhysics)
+        {
+            if (gridPhysicsMap == null)
+                gridPhysicsMap = new Dictionary<int, IBlockPhysics>();
+
+            gridPhysicsMap[blockType] = blockPhysics;
+        }
+
+        public void AddActor(GameActor a)
+        {
+            if (actors == null)
+                actors = new List<GameActor>();
+
+            actors.Add(a);
         }
 
         public GameLevel(string levelFileName)
@@ -153,11 +177,27 @@ namespace Engine2.Core
                     DrawSprite(source, x, y);
                 }
             }
+
+            foreach (var a in actors)
+            {
+                a.Render();
+            }
+        }
+
+        public virtual void Init()
+        {
+            foreach (var a in actors)
+            {
+                a.Init();
+            }
         }
 
         public virtual void Tick()
         {
-            // DO nothing here. Needs to be implemented by the derived class.
+            foreach(var a in actors)
+            {
+                a.Tick();
+            }
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)
