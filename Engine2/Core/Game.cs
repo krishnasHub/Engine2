@@ -13,14 +13,20 @@ using Engine2.Input;
 
 namespace Engine2.Core
 {
-    class Game : GameWindow
+    public class Game : GameWindow
     {
-        
-
         View view;
-        Texture2D t1, t2;
-        //Texture2D tileSet;
-        GameLevel level;
+        private GameLevel level;
+        private bool isLoaded = false;
+
+        public void SetLevel(GameLevel gameLevel)
+        {
+            level = gameLevel;
+
+            if(isLoaded)
+                view.SetPosition(view.ToWorld(new Vector2(level.PlayerStartPos.X + Width / 2, level.PlayerStartPos.Y + Height / 2)), 
+                    TweenType.QuarticOut, Constants.TWEEN_SPEED);
+        }
 
         public Game(int width, int height) : base(width, height)
         {
@@ -32,13 +38,10 @@ namespace Engine2.Core
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            view.SetPosition(view.ToWorld(new Vector2(level.PlayerStartPos.X + Width / 2, level.PlayerStartPos.Y + Height / 2)), 
+                TweenType.QuarticOut, Constants.TWEEN_SPEED);
 
-            t1 = ContentLoader.LoadTexture("tile_wall.jpg");
-            t2 = ContentLoader.LoadTexture("tile_grass.png");
-
-            //tileSet = ContentLoader.LoadTexture("tile_set1.png");
-            level = new Level("Level1.tmx", "tile_set1.png");
-            view.SetPosition(new Vector2(level.PlayerStartPos.X, level.PlayerStartPos.Y), TweenType.QuarticOut, Constants.TWEEN_SPEED);
+            isLoaded = true;
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -80,9 +83,6 @@ namespace Engine2.Core
 
             SpriteBatch.Begin(this.Width, this.Height);
             view.ApplyTransform();
-
-            SpriteBatch.Draw(t1, Vector2.Zero, new Vector2(1, 1), Color.Wheat, Vector2.Zero);
-            SpriteBatch.Draw(t2, new Vector2(-800f, -500f), new Vector2(1, 1), Color.WhiteSmoke, Vector2.Zero);
 
             level.Render();
 

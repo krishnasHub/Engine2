@@ -1,5 +1,6 @@
 ﻿using Engine2.Texture;
 using Engine2.Util;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -111,9 +112,21 @@ namespace Engine2.Core
             grid[x, y] = new Block(type, x, y);
         }
 
+        protected RectangleF GetSourceRectangle(int row, int column, int tileSize)
+        {
+            return new RectangleF(column * tileSize, row * tileSize, tileSize, tileSize);
+        }
+
         public virtual void Render()
         {
+            // To be done by the base class
+        }
 
+        protected void DrawSprite(RectangleF source, int x, int y)
+        {
+            if (source != null)
+                SpriteBatch.Draw(tileSet, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
+                    new Vector2((float)Constants.GRID_SIZE / Constants.TILE_SIZE), Color.White, Vector2.Zero, source);
         }
     }
 
