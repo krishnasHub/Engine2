@@ -19,6 +19,9 @@ namespace Engine2.Core
         public Point PlayerStartPos;
         protected Texture2D tileSet;
 
+        protected Vector2 tileSize;
+        protected int blocksInRow;
+
         public Block this[int x, int y]
         {
             get { return grid[x, y]; }
@@ -59,6 +62,13 @@ namespace Engine2.Core
 
                 var imgNode = doc.DocumentElement.SelectSingleNode("tileset").SelectSingleNode("image");
                 var tileSetPath = imgNode.Attributes["source"].InnerText;
+
+                var tWidth = doc.DocumentElement.SelectSingleNode("tileset").Attributes["tilewidth"].InnerText;
+                var tHeight = doc.DocumentElement.SelectSingleNode("tileset").Attributes["tileheight"].InnerText;
+                tileSize = new Vector2(int.Parse(tWidth), int.Parse(tHeight));
+
+                var columns = doc.DocumentElement.SelectSingleNode("tileset").Attributes["columns"].InnerText;
+                blocksInRow = int.Parse(columns);
 
                 tileSet = ContentLoader.LoadTexture(tileSetPath);
 
@@ -117,14 +127,37 @@ namespace Engine2.Core
             grid[x, y] = new Block(type, x, y);
         }
 
-        protected RectangleF GetSourceRectangle(int row, int column, int tileSize)
+        protected RectangleF GetSourceRectangle(int row, int column)
         {
-            return new RectangleF(column * tileSize, row * tileSize, tileSize, tileSize);
+            return new RectangleF(column * tileSize.X, row * tileSize.Y, tileSize.X, tileSize.Y);
         }
 
         public virtual void Render()
         {
-            
+            for (int x = 0; x < this.Width; x++)
+            {
+                for (int y = 0; y < this.Height; y++)
+                {
+                    RectangleF source;
+
+                    if (this[x, y].Type == 0)
+                        source = new RectangleF(0, 0, 0, 0);
+                    else
+                    {
+                        int r = (this[x, y].Type - 1) / blocksInRow;
+                        int c = (this[x, y].Type - 1) % blocksInRow;
+
+                        source = GetSourceRectangle(r, c);
+                    }                    
+
+                    DrawSprite(source, x, y);
+                }
+            }
+        }
+
+        public virtual void Tick()
+        {
+            // DO nothing here. Needs to be implemented by the derived class.
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)
