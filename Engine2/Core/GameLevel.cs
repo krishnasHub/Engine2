@@ -41,7 +41,7 @@ namespace Engine2.Core
             get { return tileSet; }
         }
 
-        public GameLevel(string levelFileName, string tileSetPath)
+        public GameLevel(string levelFileName)
         {
             fileName = Constants.RootFolder + "/" + levelFileName;
 
@@ -51,11 +51,16 @@ namespace Engine2.Core
                 doc.Load(fs);
 
                 int w = int.Parse(doc.DocumentElement.GetAttribute("width"));
-                int h = int.Parse(doc.DocumentElement.GetAttribute("height"));                
-                tileSet = ContentLoader.LoadTexture(tileSetPath);
+                int h = int.Parse(doc.DocumentElement.GetAttribute("height"));
+
 
                 XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer 1']");
                 var tiles = tileLayer.SelectSingleNode("data").InnerText.Trim().Split(',');
+
+                var imgNode = doc.DocumentElement.SelectSingleNode("tileset").SelectSingleNode("image");
+                var tileSetPath = imgNode.Attributes["source"].InnerText;
+
+                tileSet = ContentLoader.LoadTexture(tileSetPath);
 
                 // Just added this block.. nothing to it. Please ignore that I did..
                 {
@@ -119,7 +124,7 @@ namespace Engine2.Core
 
         public virtual void Render()
         {
-            // To be done by the base class
+            
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)
