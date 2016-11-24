@@ -45,6 +45,7 @@ namespace Engine2.Core
         public Vector2 Size
         {
             get { return size; }
+            set { size = value; }
         }
         public Vector2 PositionGoTo
         {
@@ -62,10 +63,10 @@ namespace Engine2.Core
 
         public bool IsInbounds(Vector2 pos)
         {
-            Console.WriteLine("Position:" + position);
+            Vector2 v = (position - ((size / zoom) / 2f));
+            Vector2 w = (position + ((size / zoom )/ 2f));
 
-            Vector2 v = position - (size * zoom / 2f);
-            Vector2 w = position + (size * zoom / 2f);
+            Console.WriteLine("Position:" + position + ", pos:" + pos + ", v:" + v + ", w:" + w);
 
             if (pos.X >= v.X && pos.Y >= v.Y && pos.X <= w.X && pos.Y <= w.Y)
                 return true;

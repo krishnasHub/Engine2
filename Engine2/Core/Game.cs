@@ -49,6 +49,7 @@ namespace Engine2.Core
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+            view.Size = new Vector2(this.Width, this.Height);
 
             if(GameInput.MouseButtonPress(OpenTK.Input.MouseButton.Left))
             {
