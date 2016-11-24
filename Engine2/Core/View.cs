@@ -64,7 +64,7 @@ namespace Engine2.Core
         public bool IsInbounds(Vector2 pos)
         {
             Vector2 v = (position - ((size / zoom) / 2f));
-            Vector2 w = (position + ((size / zoom )/ 2f));
+            Vector2 w = (position + ((size / zoom) / 2f));
 
             Console.WriteLine("Position:" + position + ", pos:" + pos + ", v:" + v + ", w:" + w);
 
