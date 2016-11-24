@@ -21,6 +21,8 @@ namespace Engine2.Actor
         public Vector2 Scale;
         public RectangleF BoundingBox;
 
+        public bool BindToView = false;
+
         public GameActor()
         {
             textureName = "";
@@ -65,7 +67,7 @@ namespace Engine2.Actor
 
         public virtual void Render()
         {
-            SpriteBatch.Draw(Texture, WorldSettings.View.ToWorld(Position), Scale, Color.White, Vector2.Zero);
+            SpriteBatch.Draw(Texture, Position, Scale, Color.White, Vector2.Zero);
         }
 
     }

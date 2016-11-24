@@ -23,6 +23,7 @@ namespace Engine2.Core
     public class View
     {
         private Vector2 position;
+        private Vector2 size;
 
         /// <summary>
         /// radians.
@@ -41,6 +42,10 @@ namespace Engine2.Core
         {
             get { return this.position; }
         }
+        public Vector2 Size
+        {
+            get { return size; }
+        }
         public Vector2 PositionGoTo
         {
             get { return this.positionGoTo; }
@@ -55,11 +60,27 @@ namespace Engine2.Core
             return (this.position + (dx * input.X) + (dy * input.Y));
         }
 
-        public View(Vector2 startPosition, float startRotation = 0.0f, float startZoom = 1f)
+        public bool IsInbounds(Vector2 pos)
+        {
+            Console.WriteLine("Position:" + position);
+
+            Vector2 v = position - (size * zoom / 2f);
+            Vector2 w = position + (size * zoom / 2f);
+
+            if (pos.X >= v.X && pos.Y >= v.Y && pos.X <= w.X && pos.Y <= w.Y)
+                return true;
+
+            return false;
+        }
+
+        public View(Vector2 startPosition, Vector2 size, float startRotation = 0.0f, float startZoom = 1f)
         {
             position = startPosition;
             rotation = startRotation;
+            this.size = size;
             zoom = startZoom;
+
+            
         }
 
         public void Update()
@@ -127,7 +148,7 @@ namespace Engine2.Core
         public void SetPosition(Vector2 newPosition, TweenType type, int numSteps)
         {
             this.positionFrom = this.position;
-            this.position = newPosition;
+            //this.position = newPosition;
             this.positionGoTo = newPosition;
 
             tweenType = type;

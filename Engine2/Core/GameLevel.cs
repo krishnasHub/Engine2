@@ -17,7 +17,8 @@ namespace Engine2.Core
     {
         protected Block[,] grid;
         protected string fileName;
-        public Point PlayerStartPos;
+        public Vector2 ViewCenterPos;
+        public GameActor BoundActor;
         protected Texture2D tileSet;
         protected List<GameActor> actors;
 
@@ -71,6 +72,7 @@ namespace Engine2.Core
         public GameLevel(string levelFileName)
         {
             fileName = Constants.RootFolder + "/" + levelFileName;
+            ViewCenterPos = new Vector2(0f, 0f);
 
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
@@ -108,27 +110,6 @@ namespace Engine2.Core
                             i++;
                         }
                 }
-
-                XmlNode objLayer = doc.DocumentElement.SelectSingleNode("objectgroup[@name='Object Layer 1']");
-                var objects = objLayer.SelectNodes("object");
-
-                for (int i = 0; i < objects.Count; ++i)
-                {
-                    int xPos = (int)float.Parse(objects[i].Attributes["x"].Value);
-                    int yPos = (int)float.Parse(objects[i].Attributes["y"].Value);
-                    string objName = objects[i].Attributes["name"].Value;
-
-                    switch (objName)
-                    {
-                        case "playerStartPos":
-                            PlayerStartPos = new Point((int)(xPos / (float)Constants.TILE_SIZE), (int)(yPos / (float)Constants.TILE_SIZE));
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
             }
         }
 
@@ -190,6 +171,13 @@ namespace Engine2.Core
             {
                 a.Init();
             }
+
+            var bindActor = actors.FirstOrDefault(a => a.BindToView);
+            if(bindActor != null)
+            {
+                BoundActor = bindActor;
+                ViewCenterPos = BoundActor.Position;
+            }
         }
 
         public virtual void Tick()
@@ -198,6 +186,16 @@ namespace Engine2.Core
             {
                 a.Tick();
             }
+
+            if (BoundActor != null)
+            {
+                var pos = BoundActor.Position;
+                //var pos = WorldSettings.View.ToWorld(BoundActor.Position);
+
+                if (!WorldSettings.View.IsInbounds(pos))
+                    WorldSettings.View.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
+            }
+
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)

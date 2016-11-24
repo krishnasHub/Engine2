@@ -17,33 +17,33 @@ namespace Engine2.Core
     {
         View view;
         private GameLevel level;
-        private bool isLoaded = false;
 
         public void SetLevel(GameLevel gameLevel)
         {
             level = gameLevel;
-
-            if(isLoaded)
-                view.SetPosition(view.ToWorld(new Vector2(level.PlayerStartPos.X + Width / 2, level.PlayerStartPos.Y + Height / 2)), 
-                    TweenType.QuarticOut, Constants.TWEEN_SPEED);
         }
 
-        public Game(int width, int height) : base(width, height)
+        public Game(int width, int height, float zoom = 1f, float rotation = 0f) : base(width, height)
         {
             GL.Enable(EnableCap.Texture2D);
-            view = new View(Vector2.Zero, 0.0f, 0.75f);
+            view = new View(new Vector2(width / 2, height / 2), new Vector2(width, height), rotation, zoom);
             WorldSettings.View = view;
+            WorldSettings.Height = this.Height;
+            WorldSettings.Width = this.Width;
             GameInput.Initialize(this);
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            view.SetPosition(view.ToWorld(new Vector2(level.PlayerStartPos.X + Width / 2, level.PlayerStartPos.Y + Height / 2)), 
-                TweenType.QuarticOut, Constants.TWEEN_SPEED);
-
-            isLoaded = true;
             level.Init();
+
+            // Set the View to center on the level
+            if(level.BoundActor != null)
+            {
+                view.SetPosition(view.ToWorld(level.BoundActor.Position), TweenType.QuarticOut, Constants.TWEEN_SPEED);
+            }
+            
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -52,10 +52,7 @@ namespace Engine2.Core
 
             if(GameInput.MouseButtonPress(OpenTK.Input.MouseButton.Left))
             {
-                Vector2 pos = new Vector2(Mouse.X, Mouse.Y);
-                pos -= new Vector2(this.Width, this.Height) / 2f;
-                pos = view.ToWorld(pos);
-
+                var pos = WorldSettings.TranslateFromScreenToGameCoords(new Vector2(Mouse.X, Mouse.Y));
                 view.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
             }
 
