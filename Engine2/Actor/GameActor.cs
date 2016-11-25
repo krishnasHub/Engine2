@@ -43,6 +43,8 @@ namespace Engine2.Actor
         public BoundingShape BoundingShape = BoundingShape.BoundingBox;
         private bool boundingBoxSet = false;
 
+
+        public IActorPhysics PhysicsComponent;
         public bool BindToView = false;
 
         public GameActor()
@@ -116,6 +118,10 @@ namespace Engine2.Actor
         public virtual void onHit(GameActor otherActor)
         {
             // handle post collission code here..
+            // Only handle code related to this Actor.
+            // The code to worry about otherActor should be written in that class and NOT here.
+
+            Console.WriteLine("Collided with another object!");
         }
 
     }

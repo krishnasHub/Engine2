@@ -226,10 +226,21 @@ namespace Engine2.Core
                             }
                         }
                 }
-
-                
-
             }
+
+            // Check for collissions between each actor
+            actors.ForEach(a =>
+            {
+                if (a.PhysicsComponent != null)
+                    actors.Where(c => a != c).ToList().ForEach(b =>
+                    {
+                        if (a.PhysicsComponent.CheckCollission(a, b))
+                        {
+                            a.onHit(b);
+                            b.onHit(a);
+                        }
+                    });
+            });
 
         }
 

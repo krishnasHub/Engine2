@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actor\GameActor.cs" />
+    <Compile Include="Actor\IActorPhysics.cs" />
     <Compile Include="Actor\IBlockPhysics.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\GameLevel.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Texture\Texture2D.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\ContentLoader.cs" />
+    <Compile Include="Util\SimpleMath.cs" />
     <Compile Include="Util\WorldSettings.cs" />
   </ItemGroup>
   <ItemGroup>
