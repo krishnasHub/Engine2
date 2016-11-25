@@ -4,3 +4,7 @@ C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\bin
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\obj\Debug\Engine2.Physics.dll
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\obj\Debug\Engine2.Physics.pdb
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\obj\Debug\Engine2.Physics.csprojResolveAssemblyReference.cache
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\bin\Debug\Engine2.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\bin\Debug\OpenTK.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\bin\Debug\Engine2.pdb
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Physics\bin\Debug\OpenTK.xml

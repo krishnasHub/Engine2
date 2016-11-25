@@ -182,18 +182,53 @@ namespace Engine2.Core
 
         public virtual void Tick()
         {
+            // Tick every actor
             foreach(var a in actors)
             {
                 a.Tick();
             }
 
+            // Reposition the camera if the bound actor has moved out of frame
             if (BoundActor != null)
             {
                 var pos = BoundActor.Position;
-                //var pos = WorldSettings.View.ToWorld(BoundActor.Position);
 
                 if (!WorldSettings.View.IsInbounds(pos))
                     WorldSettings.View.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
+            }
+
+            // Check collissions for every actor with the surrounding blocks in the levels that it is colliding with
+            foreach(var a in actors)
+            {
+                if (gridPhysicsMap != null)
+                {
+                    var l = a.Position / Constants.GRID_SIZE;
+                    var xl = (int)l.X - 5;
+                    var yl = (int)l.Y - 5;
+                    var xr = ((int)(a.Position.X + a.BoundingBox.Right) / Constants.GRID_SIZE) + 5;
+                    var yr = ((int)(a.Position.Y + a.BoundingBox.Bottom) / Constants.GRID_SIZE) + 5;
+
+                    for (int x = xl; x <= xr; x++)
+                        for (int y = yl; y <= yr; y++)
+                        {
+                            if (!gridPhysicsMap.ContainsKey(this[x, y].Type))
+                                continue;
+
+                            var p = gridPhysicsMap[this[x, y].Type];
+
+                            if(p != null)
+                            {
+                                if(p.CheckCollision(a, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
+                                    new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
+                                {
+                                    p.HandleCollission(a);
+                                }
+                            }
+                        }
+                }
+
+                
+
             }
 
         }
