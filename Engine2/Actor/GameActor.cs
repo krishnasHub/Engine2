@@ -44,8 +44,19 @@ namespace Engine2.Actor
         private bool boundingBoxSet = false;
 
 
-        public IActorPhysics PhysicsComponent;
+        private IActorPhysics physicsComponent;
         public bool BindToView = false;
+
+        public IActorPhysics PhysicsComponent
+        {
+            set
+            {
+                physicsComponent = value;
+                physicsComponent.SetActor(this);
+            }
+
+            get { return physicsComponent; }
+        }
 
         public GameActor()
         {
@@ -119,9 +130,7 @@ namespace Engine2.Actor
         {
             // handle post collission code here..
             // Only handle code related to this Actor.
-            // The code to worry about otherActor should be written in that class and NOT here.
-
-            Console.WriteLine("Collided with another object!");
+            // The code to worry about otherActor should be written in that class and NOT here.           
         }
 
     }

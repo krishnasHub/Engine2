@@ -10,16 +10,23 @@ namespace Engine2.Physics.Actor
 {
     public class ActorPhysics : IActorPhysics
     {
-        public bool CheckCollission(GameActor a, GameActor b)
+        private GameActor actor;
+
+        public void SetActor(GameActor a)
         {
-            if (a.BoundingShape == BoundingShape.BoundingBox && b.BoundingShape == BoundingShape.BoundingBox)
-                return checkBoxOverBox(a, b);
-            else if (a.BoundingShape == BoundingShape.BoundingBox && b.BoundingShape == BoundingShape.BoundingCircle)
-                return checkBoxOverCircle(a, b);
-            else if (a.BoundingShape == BoundingShape.BoundingCircle && b.BoundingShape == BoundingShape.BoundingBox)
-                return checkBoxOverCircle(b, a);
-            else if (a.BoundingShape == BoundingShape.BoundingCircle && b.BoundingShape == BoundingShape.BoundingCircle)
-                return checkCircleOverCircle(a, b);
+            actor = a;
+        }
+
+        public bool CheckCollission(GameActor b)
+        {
+            if (actor.BoundingShape == BoundingShape.BoundingBox && b.BoundingShape == BoundingShape.BoundingBox)
+                return checkBoxOverBox(actor, b);
+            else if (actor.BoundingShape == BoundingShape.BoundingBox && b.BoundingShape == BoundingShape.BoundingCircle)
+                return checkBoxOverCircle(actor, b);
+            else if (actor.BoundingShape == BoundingShape.BoundingCircle && b.BoundingShape == BoundingShape.BoundingBox)
+                return checkBoxOverCircle(b, actor);
+            else if (actor.BoundingShape == BoundingShape.BoundingCircle && b.BoundingShape == BoundingShape.BoundingCircle)
+                return checkCircleOverCircle(actor, b);
 
             // Default.. should never really be here!
             return false;

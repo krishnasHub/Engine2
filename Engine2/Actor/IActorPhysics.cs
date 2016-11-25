@@ -8,6 +8,7 @@ namespace Engine2.Actor
 {
     public interface IActorPhysics
     {
-        bool CheckCollission(GameActor a, GameActor b);
+        void SetActor(GameActor a);
+        bool CheckCollission(GameActor otherActor);
     }
 }

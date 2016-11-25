@@ -180,15 +180,9 @@ namespace Engine2.Core
             }
         }
 
-        public virtual void Tick()
-        {
-            // Tick every actor
-            foreach(var a in actors)
-            {
-                a.Tick();
-            }
 
-            // Reposition the camera if the bound actor has moved out of frame
+        private void repositionView()
+        {
             if (BoundActor != null)
             {
                 var pos = BoundActor.Position;
@@ -196,9 +190,11 @@ namespace Engine2.Core
                 if (!WorldSettings.View.IsInbounds(pos))
                     WorldSettings.View.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
             }
+        }
 
-            // Check collissions for every actor with the surrounding blocks in the levels that it is colliding with
-            foreach(var a in actors)
+        private void CheckcollissionWithBlocks()
+        {
+            foreach (var a in actors)
             {
                 if (gridPhysicsMap != null)
                 {
@@ -216,9 +212,9 @@ namespace Engine2.Core
 
                             var p = gridPhysicsMap[this[x, y].Type];
 
-                            if(p != null)
+                            if (p != null)
                             {
-                                if(p.CheckCollision(a, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
+                                if (p.CheckCollision(a, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
                                     new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
                                 {
                                     p.HandleCollission(a);
@@ -227,20 +223,45 @@ namespace Engine2.Core
                         }
                 }
             }
+        }
 
-            // Check for collissions between each actor
+        private void checkCollissionsWithOtherActors()
+        {
             actors.ForEach(a =>
             {
                 if (a.PhysicsComponent != null)
                     actors.Where(c => a != c).ToList().ForEach(b =>
                     {
-                        if (a.PhysicsComponent.CheckCollission(a, b))
+                        if (a.PhysicsComponent.CheckCollission(b))
                         {
                             a.onHit(b);
                             b.onHit(a);
                         }
                     });
             });
+        }
+
+        private void tickActors()
+        {
+            foreach (var a in actors)
+            {
+                a.Tick();
+            }
+        }
+
+        public virtual void Tick()
+        {
+            // Reposition the camera if the bound actor has moved out of frame
+            repositionView();
+
+            // Check collissions for every actor with the surrounding blocks in the levels that it is colliding with
+            CheckcollissionWithBlocks();
+
+            // Check for collissions between each actor
+            checkCollissionsWithOtherActors();
+
+            // Tick every actor
+            tickActors();
 
         }
 
