@@ -66,7 +66,50 @@ namespace Engine2.Core
             if (actors == null)
                 actors = new List<GameActor>();
 
+            a.ParentLevel = this;
             actors.Add(a);
+        }
+
+        public bool CanActorMoveTo(GameActor actor, Vector2 pos)
+        {
+            if (gridPhysicsMap == null)
+                return true;
+
+            // We need the GRID co-ordinates of the actor's boundaries.
+            // Get the top left block where the actor intersects.
+            // Get the bottom right block where the actor intersects.
+            var pos1 = pos / Constants.GRID_SIZE;
+            // dx and dy are the width and height of the actor.
+            var dx = (actor.BoundingShape == BoundingShape.BoundingBox ? actor.BoundingBox.Right : actor.BoundingRadius * 2f);
+            var dy = (actor.BoundingShape == BoundingShape.BoundingBox ? actor.BoundingBox.Bottom : actor.BoundingRadius * 2f); 
+            // The new position would be pos + the width and height of the actor.
+            var pos2 = pos + new Vector2(dx, dy);
+            pos2 /= Constants.GRID_SIZE;
+            // I feel shitty about adding this line, but turns out, adding this makes motion smoother.
+            pos2 -= new Vector2(0.1f, 0.1f);
+
+            // Now loop through all the blocks from pos1 through pos2.
+            // If the actor cannot collide with any of these set of blocks, return false.
+            // If the actor can collide with all of these blocks, return true.
+            for (int x = (int) pos1.X; x <= (int) pos2.X; ++x)
+                for (int y = (int)pos1.Y; y <= (int)pos2.Y; ++y)
+                {
+                    // Get the type of this block
+                    var type = this[x, y].Type;
+
+                    // If we have no Physics set to this type of block, move on.
+                    if (!gridPhysicsMap.ContainsKey(type))
+                        continue;
+
+                    // Get the block's physical position
+                    var blockPos = new Vector2(this[x, y].X * Constants.GRID_SIZE, this[x, y].Y * Constants.GRID_SIZE);
+
+                    // If the actor is colliding with this block, then return false.
+                    if (gridPhysicsMap[type].CheckCollision(actor, blockPos, new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
+                        return false;
+                }
+
+            return true;
         }
 
         public GameLevel(string levelFileName)

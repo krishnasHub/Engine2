@@ -10,6 +10,7 @@ using System.Drawing;
 using Engine2.Util;
 using Engine2.Texture;
 using Engine2.Input;
+using OpenTK.Input;
 
 namespace Engine2.Core
 {
@@ -17,6 +18,32 @@ namespace Engine2.Core
     {
         View view;
         private GameLevel level;
+
+        private Dictionary<Key, List<Action<InputEvent>>> keyEventMap;
+        private Dictionary<MouseButton, List<Action<InputEvent>>> mouseEventMap;
+
+
+        public void AddKeyEvent(Key key, Action<InputEvent> ev)
+        {
+            if (keyEventMap == null)
+                keyEventMap = new Dictionary<Key, List<Action<InputEvent>>>();
+
+            if (!keyEventMap.ContainsKey(key))
+                keyEventMap[key] = new List<Action<InputEvent>>();
+
+            keyEventMap[key].Add(ev);
+        }
+
+        public void AddMouseEvent(MouseButton mouse, Action<InputEvent> ev)
+        {
+            if (mouseEventMap == null)
+                mouseEventMap = new Dictionary<MouseButton, List<Action<InputEvent>>>();
+
+            if (!mouseEventMap.ContainsKey(mouse))
+                mouseEventMap[mouse] = new List<Action<InputEvent>>();
+
+            mouseEventMap[mouse].Add(ev);
+        }
 
         public void SetLevel(GameLevel gameLevel)
         {
@@ -26,6 +53,9 @@ namespace Engine2.Core
         public Game(int width, int height, float zoom = 1f, float rotation = 0f) : base(width, height)
         {
             GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            
             view = new View(new Vector2(width / 2, height / 2), new Vector2(width, height), rotation, zoom);
             WorldSettings.View = view;
             WorldSettings.Height = this.Height;
@@ -43,7 +73,25 @@ namespace Engine2.Core
             {
                 view.SetPosition(view.ToWorld(level.BoundActor.Position), TweenType.QuarticOut, Constants.TWEEN_SPEED);
             }
-            
+        }
+
+
+        private void checkKeyEvents()
+        {
+            if (keyEventMap != null)
+                foreach (var key in keyEventMap.Keys)
+                {
+                    keyEventMap[key].ForEach(a =>
+                    {
+                        var inputEvent = new InputEvent(key);
+                        inputEvent.IsPressed = GameInput.KeyPress(key);
+                        inputEvent.IsReleased = GameInput.KeyRelease(key);
+                        inputEvent.IsDown = GameInput.KeyDown(key);
+
+                        if(inputEvent.IsPressed || inputEvent.IsReleased || inputEvent.IsDown)
+                            a.Invoke(inputEvent);
+                    });
+                }
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -57,18 +105,8 @@ namespace Engine2.Core
                 view.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
             }
 
-            if(GameInput.KeyPress(OpenTK.Input.Key.Right))            
-                view.SetPosition(view.PositionGoTo + new Vector2(5, 0), TweenType.QuarticOut, Constants.TWEEN_SPEED);
 
-            if (GameInput.KeyPress(OpenTK.Input.Key.Left))
-                view.SetPosition(view.PositionGoTo + new Vector2(-5, 0), TweenType.QuarticOut, Constants.TWEEN_SPEED);
-
-            if (GameInput.KeyPress(OpenTK.Input.Key.Up))
-                view.SetPosition(view.PositionGoTo + new Vector2(0, -5), TweenType.QuarticOut, Constants.TWEEN_SPEED);
-
-            if (GameInput.KeyPress(OpenTK.Input.Key.Down))
-                view.SetPosition(view.PositionGoTo + new Vector2(0, 5), TweenType.QuarticOut, Constants.TWEEN_SPEED);
-
+            checkKeyEvents();
 
             view.Update();
             GameInput.Update();

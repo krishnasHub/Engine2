@@ -22,12 +22,22 @@ namespace Engine2.Actor
         private string textureName;
         Texture2D Texture;
         protected Vector2 position;
-
+        public GameLevel ParentLevel;
 
         public Vector2 Position
         {
             set
             {
+                if (ParentLevel != null)
+                {
+                    if (!ParentLevel.CanActorMoveTo(this, value))
+                    {
+                        //this.position -= value;
+                        return;
+                    }
+                        
+                }
+
                 this.position = value;
                 if(this.Texture.Id != -1 && Scale != null)
                     Center = new Vector2(position.X + (Texture.Width * Scale.X) / 2f, position.Y + (Texture.Height * Scale.Y) / 2f);

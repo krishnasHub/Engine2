@@ -33,6 +33,10 @@ namespace Engine2.Physics.Block
 
         public void HandleCollission(GameActor actor)
         {
+            // If it has no velocity, no point setting the position to anything.
+            if (actor.Velocity.X == 0f && actor.Velocity.Y == 0f)
+                return;
+
             actor.Position -= actor.Velocity;
             actor.Velocity -= actor.Velocity;
         }
