@@ -27,6 +27,8 @@ namespace Engine2.Core
 
         protected Dictionary<int, IBlockPhysics> gridPhysicsMap;
 
+        public ILevelPhysics LevelPhysics;
+
         public Block this[int x, int y]
         {
             get { return grid[x, y]; }
@@ -86,7 +88,7 @@ namespace Engine2.Core
             var pos2 = pos + new Vector2(dx, dy);
             pos2 /= Constants.GRID_SIZE;
             // I feel shitty about adding this line, but turns out, adding this makes motion smoother.
-            pos2 -= new Vector2(0.1f, 0.1f);
+            //pos2 -= new Vector2(0.1f, 0.1f);
 
             // Now loop through all the blocks from pos1 through pos2.
             // If the actor cannot collide with any of these set of blocks, return false.
@@ -297,15 +299,31 @@ namespace Engine2.Core
             // Reposition the camera if the bound actor has moved out of frame
             repositionView();
 
+            if (LevelPhysics != null)
+            {
+                actors.ForEach(a =>
+                {
+                    if (this.CanActorMoveTo(a, a.Position + a.Velocity + LevelPhysics.GetGravityVector()))
+                    {
+                        LevelPhysics.AddGravity(a);
+                    }
+                    else
+                    {
+                        a.InAir = false;
+                        //a.Velocity = Vector2.Zero;
+                    }
+                });                
+            }
+                
+
+            // Tick every actor
+            tickActors();
+
             // Check collissions for every actor with the surrounding blocks in the levels that it is colliding with
             CheckcollissionWithBlocks();
 
             // Check for collissions between each actor
             checkCollissionsWithOtherActors();
-
-            // Tick every actor
-            tickActors();
-
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)

@@ -16,6 +16,8 @@ namespace Engine2.Core
 
         public static void Draw(Texture2D texture, Vector2 position, Vector2 scale, Color color, Vector2 origin, RectangleF? sourceRec = null)
         {
+            
+
             Vector2[] vertices = new Vector2[]
             {
                 new Vector2(0, 0),
@@ -48,6 +50,10 @@ namespace Engine2.Core
                 GL.Vertex2(vertices[i]);
             }
 
+            
+
+            
+
             GL.End();
         }
 
@@ -59,5 +65,6 @@ namespace Engine2.Core
             GL.Ortho(-screenWidth / 2f, screenWidth / 2f, screenHeight / 2f, -screenHeight / 2f, 0f, 1f);
 
         }
+
     }
 }

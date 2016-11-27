@@ -37,8 +37,16 @@ namespace Engine2.Physics.Block
             if (actor.Velocity.X == 0f && actor.Velocity.Y == 0f)
                 return;
 
+
+            actor.Velocity *= 1f;
+            actor.Position += actor.Velocity;
+
+            //actor.Velocity = Vector2.Zero;
+
             actor.Position -= actor.Velocity;
+            actor.Center -= actor.Velocity;
             actor.Velocity -= actor.Velocity;
+            actor.InAir = false;
         }
     }
 }

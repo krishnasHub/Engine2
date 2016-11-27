@@ -53,9 +53,25 @@ namespace Engine2.Actor
         public BoundingShape BoundingShape = BoundingShape.BoundingBox;
         private bool boundingBoxSet = false;
 
+        public bool InAir = false;
 
         private IActorPhysics physicsComponent;
         public bool BindToView = false;
+
+        public Vector2 JumpVector = new Vector2(0f, -5f);
+
+        public void Jump()
+        {
+            if (InAir)
+                return;
+
+            if (!ParentLevel.CanActorMoveTo(this, this.Position + this.Velocity + 2f * JumpVector))
+                return;
+
+            InAir = true;
+            this.Velocity += JumpVector;
+            this.Position += JumpVector;
+        }
 
         public IActorPhysics PhysicsComponent
         {
