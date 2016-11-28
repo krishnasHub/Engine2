@@ -37,12 +37,19 @@ namespace Engine2.Physics.Block
             if (actor.Velocity.X == 0f && actor.Velocity.Y == 0f)
                 return;
 
+            // If the actor is currently colliding with the block but with it's velocity can move to a non-colliding location, then let it go.
+            if (actor.ParentLevel != null && actor.ParentLevel.CanActorMoveTo(actor, actor.Position + 2 * actor.Velocity))
+                return;
 
-            actor.Velocity *= 1f;
-            actor.Position += actor.Velocity;
+            // Bounce the actor, if bouncing is set
+            if (actor.BounceFactor > 0f)
+            {
+                actor.Velocity *= actor.BounceFactor;
+                actor.Position += actor.Velocity;
+            }
 
-            //actor.Velocity = Vector2.Zero;
-
+            // Reverse the velocity and set the position to default values.
+            // Set inAir to false since we've crashed onto something..
             actor.Position -= actor.Velocity;
             actor.Center -= actor.Velocity;
             actor.Velocity -= actor.Velocity;

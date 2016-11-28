@@ -88,7 +88,7 @@ namespace Engine2.Core
             var pos2 = pos + new Vector2(dx, dy);
             pos2 /= Constants.GRID_SIZE;
             // I feel shitty about adding this line, but turns out, adding this makes motion smoother.
-            //pos2 -= new Vector2(0.1f, 0.1f);
+            pos2 -= new Vector2(0.05f, 0.05f);
 
             // Now loop through all the blocks from pos1 through pos2.
             // If the actor cannot collide with any of these set of blocks, return false.

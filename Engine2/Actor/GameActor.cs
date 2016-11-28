@@ -59,6 +59,7 @@ namespace Engine2.Actor
         public bool BindToView = false;
 
         public Vector2 JumpVector = new Vector2(0f, -5f);
+        public float BounceFactor = 2f;
 
         public void Jump()
         {
