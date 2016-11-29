@@ -21,8 +21,23 @@ namespace Engine2.Actor
     {
         private string textureName;
         Texture2D Texture;
+        
         protected Vector2 position;
         public GameLevel ParentLevel;
+
+        private TileSheetManager tileSheet;
+        private bool useTileSheetManager = false;
+
+        public TileSheetManager TileSheet
+        {
+            set
+            {
+                tileSheet = value;
+                useTileSheetManager = true;
+            }
+
+            get { return tileSheet; }
+        }
 
         public Vector2 Position
         {
@@ -107,39 +122,56 @@ namespace Engine2.Actor
 
         public virtual void Init()
         {
-            Texture = ContentLoader.LoadTexture(this.textureName);
-
-            if (Scale == null)
-                Scale = new Vector2(1f, 1f);
-
-            // If it's a bounding box (the default value)
-            //  then the box starts with 0, 0 to width and height
-            if(BoundingShape == BoundingShape.BoundingBox)
-            {
-                if (!boundingBoxSet)
-                    BoundingBox = new RectangleF(0, 0, Texture.Width * Scale.X, Texture.Height * Scale.Y);
-
-                boundingBoxSet = true;
-            } 
-
-            // If the shape is that of a circle, then, we assume the texture width and height are the same
-            //  also, we set the radius to the width times scale.
-            else if (BoundingShape == BoundingShape.BoundingCircle)
-            {
-                if(!boundingBoxSet)
-                    BoundingRadius = Texture.Width * Scale.X;
-
-                boundingBoxSet = true;
-            }            
-
             if (Velocity == null)
                 Velocity = new Vector2(0f, 0f);
 
             if (position == null)
                 position = new Vector2(0f, 0f);
 
-            if (Center == null)
-                Center = new Vector2(position.X + (Texture.Width * Scale.X) / 2f, position.Y + (Texture.Height * Scale.Y) / 2f);
+            if (useTileSheetManager)
+            {
+                tileSheet.Init();
+
+                if (BoundingShape == BoundingShape.BoundingBox)
+                {
+                    if (!boundingBoxSet)
+                        BoundingBox = new RectangleF(0, 0, tileSheet.SpriteWidth * Scale.X, tileSheet.SpriteHeight * Scale.Y);
+
+                    boundingBoxSet = true;
+                }
+            }
+            else
+            {
+                Texture = ContentLoader.LoadTexture(this.textureName);
+
+                if (Scale == null)
+                    Scale = new Vector2(1f, 1f);
+
+                // If it's a bounding box (the default value)
+                //  then the box starts with 0, 0 to width and height
+                if (BoundingShape == BoundingShape.BoundingBox)
+                {
+                    if (!boundingBoxSet)
+                        BoundingBox = new RectangleF(0, 0, Texture.Width * Scale.X, Texture.Height * Scale.Y);
+
+                    boundingBoxSet = true;
+                }
+
+                // If the shape is that of a circle, then, we assume the texture width and height are the same
+                //  also, we set the radius to the width times scale.
+                else if (BoundingShape == BoundingShape.BoundingCircle)
+                {
+                    if (!boundingBoxSet)
+                        BoundingRadius = Texture.Width * Scale.X;
+
+                    boundingBoxSet = true;
+                }
+
+                // MOstly used in case of a circle as a bounding box
+                if (Center == null)
+                    Center = new Vector2(position.X + (Texture.Width * Scale.X) / 2f, position.Y + (Texture.Height * Scale.Y) / 2f);
+            }            
+            
         }
 
         public virtual void Tick()
@@ -150,7 +182,14 @@ namespace Engine2.Actor
 
         public virtual void Render()
         {
-            SpriteBatch.Draw(Texture, position, Scale, Color.White, Vector2.Zero);
+            if(useTileSheetManager)
+            {
+                tileSheet.Render(position, Scale);
+            }
+            else
+            {
+                SpriteBatch.Draw(Texture, position, Scale, Color.White, Vector2.Zero);
+            }            
         }
 
         public virtual void onHit(GameActor otherActor)
