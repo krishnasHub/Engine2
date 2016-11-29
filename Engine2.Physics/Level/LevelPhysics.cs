@@ -17,7 +17,7 @@ namespace Engine2.Physics.Level
         {
             foreach (var actor in actors)
             {
-                actor.Velocity += gravity;
+                AddGravity(actor);
             }
         }
 

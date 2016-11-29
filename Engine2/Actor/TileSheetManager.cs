@@ -22,12 +22,15 @@ namespace Engine2.Actor
         public int Columns;
         public float SpriteWidth;
         public float SpriteHeight;
-
+        public RectangleF SpriteBuffer;
         public int CurrentSprite = 1;
 
         public void Init()
         {
             tileSheet = ContentLoader.LoadTexture(tileSheetName);
+
+            if (SpriteBuffer == null)
+                SpriteBuffer = new RectangleF(00f, 0f, 0f, 0f);
         }
 
         public TileSheetManager(string tileSheetName)
@@ -43,7 +46,7 @@ namespace Engine2.Actor
             float x = c * SpriteWidth;
             float y = r * SpriteHeight;
 
-            RectangleF source = new RectangleF(x, y, SpriteWidth, SpriteHeight);
+            RectangleF source = new RectangleF(x + SpriteBuffer.X, y + SpriteBuffer.Y, SpriteWidth - SpriteBuffer.X - SpriteBuffer.Width, SpriteHeight - SpriteBuffer.Y - SpriteBuffer.Height);
 
             SpriteBatch.Draw(tileSheet, position, scale, Color.White, Vector2.Zero, source);
         }

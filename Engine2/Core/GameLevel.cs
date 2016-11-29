@@ -264,6 +264,7 @@ namespace Engine2.Core
                                 {
                                     p.HandleCollission(a);
                                 }
+                                
                             }
                         }
                 }
@@ -306,6 +307,7 @@ namespace Engine2.Core
                     if (this.CanActorMoveTo(a, a.Position + a.Velocity + LevelPhysics.GetGravityVector()))
                     {
                         LevelPhysics.AddGravity(a);
+                        //a.InAir = true;
                     }
                     else
                     {

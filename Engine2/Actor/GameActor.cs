@@ -135,7 +135,9 @@ namespace Engine2.Actor
                 if (BoundingShape == BoundingShape.BoundingBox)
                 {
                     if (!boundingBoxSet)
-                        BoundingBox = new RectangleF(0, 0, tileSheet.SpriteWidth * Scale.X, tileSheet.SpriteHeight * Scale.Y);
+                        BoundingBox = new RectangleF(0, 0, 
+                            (tileSheet.SpriteWidth - tileSheet.SpriteBuffer.X - tileSheet.SpriteBuffer.Width) * Scale.X, 
+                            (tileSheet.SpriteHeight - tileSheet.SpriteBuffer.Y - tileSheet.SpriteBuffer.Height) * Scale.Y);
 
                     boundingBoxSet = true;
                 }
