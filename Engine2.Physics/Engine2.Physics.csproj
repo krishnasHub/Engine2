@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actor\ActorPhysics.cs" />
+    <Compile Include="Block\LadderBlockPhysics.cs" />
     <Compile Include="Level\LevelPhysics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -13,5 +13,7 @@ namespace Engine2.Actor
         bool CheckCollision(GameActor actor, Vector2 blockPosition, Vector2 blockSize);
 
         void HandleCollission(GameActor actor);
+
+        bool CanStepIntoMe();
     }
 }

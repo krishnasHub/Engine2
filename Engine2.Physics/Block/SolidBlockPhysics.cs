@@ -31,6 +31,12 @@ namespace Engine2.Physics.Block
             return false;
         }
 
+
+        public bool CanStepIntoMe()
+        {
+            return false;
+        }
+
         public void HandleCollission(GameActor actor)
         {
             // If it has no velocity, no point setting the position to anything.

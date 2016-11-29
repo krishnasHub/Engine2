@@ -108,7 +108,13 @@ namespace Engine2.Core
 
                     // If the actor is colliding with this block, then return false.
                     if (gridPhysicsMap[type].CheckCollision(actor, blockPos, new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
+                    {
+                        var value = gridPhysicsMap[type].CanStepIntoMe();
+                        if (value)
+                            continue;
                         return false;
+                    }
+                        
                 }
 
             return true;
