@@ -24,127 +24,34 @@ namespace Engine2.Core
         private Dictionary<MouseButton, List<Action<InputEvent>>> mouseEventMap;
 
 
-        /*
-        #region Shaders
+        #region Lighting Region
 
-        int pgmID;
+        float xPos = 0f;
+        float yPos = 0f;
+        float zPos = 50f;
 
-        int vsID;
-        int fsID;
-
-        Vector3[] vertdata;
-        Vector3[] coldata;
-        Matrix4[] mviewdata;
-
-
-        int attribute_vcol;
-        int attribute_vpos;
-        int uniform_mview;
-
-        int vbo_position;
-        int vbo_color;
-        int vbo_mview;
-
-        private void initProgram()
+        protected void OnColorLoad(Vector2 position)
         {
-            pgmID = GL.CreateProgram();
+            //GL.Enable(EnableCap.DepthTest);
+            
+            xPos = position.X;
+            yPos = position.Y;
 
-            loadShader("Content/Shaders/vs.glsl", ShaderType.VertexShader, pgmID, out vsID);
-            loadShader("Content/Shaders/fs.glsl", ShaderType.FragmentShader, pgmID, out fsID);
-
-
-            GL.LinkProgram(pgmID);
-            Console.WriteLine(GL.GetProgramInfoLog(pgmID));
-
-            attribute_vpos = GL.GetAttribLocation(pgmID, "vPosition");
-            attribute_vcol = GL.GetAttribLocation(pgmID, "vColor");
-            uniform_mview = GL.GetUniformLocation(pgmID, "modelview");
-
-            if (attribute_vpos == -1 || attribute_vcol == -1 || uniform_mview == -1)
-            {
-                Console.WriteLine("Error binding attributes");
-            }
-
-            GL.GenBuffers(1, out vbo_position);
-            GL.GenBuffers(1, out vbo_color);
-            GL.GenBuffers(1, out vbo_mview);
-        }
-
-        private void loadShader(String filename, ShaderType type, int program, out int address)
-        {
-            address = GL.CreateShader(type);
-
-            using (var sr = new StreamReader(filename))
-            {
-                GL.ShaderSource(address, sr.ReadToEnd());
-            }
-
-            GL.CompileShader(address);
-            GL.AttachShader(program, address);
-            Console.WriteLine(GL.GetShaderInfoLog(address));
-
-        }
-
-        private void onShaderLoad()
-        {
-            initProgram();
-
-            vertdata = new Vector3[] { new Vector3(-0.8f, -0.8f, 0f),
-                new Vector3( 0.8f, -0.8f, 0f),
-                new Vector3( 0f,  0.8f, 0f)};
-
-
-            coldata = new Vector3[] { new Vector3(1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f),
-                new Vector3( 0f,  1f, 0f)};
-
-
-            mviewdata = new Matrix4[]{
-                Matrix4.Identity
-            };
-        }
-
-        private void UpdateShaderFrame()
-        {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
-
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_color);
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
-
-            GL.UniformMatrix4(uniform_mview, false, ref mviewdata[0]);
-
-            GL.UseProgram(pgmID);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
-            GL.EnableVertexAttribArray(attribute_vpos);
-            GL.EnableVertexAttribArray(attribute_vcol);
-        }
-
-        private void RenderShaderFrame()
-        {
-            GL.Enable(EnableCap.DepthTest);
-
-
-            GL.EnableVertexAttribArray(attribute_vpos);
-            GL.EnableVertexAttribArray(attribute_vcol);
-
-
-            GL.DrawArrays(BeginMode.Triangles, 0, 3);
-
-
-            GL.DisableVertexAttribArray(attribute_vpos);
-            GL.DisableVertexAttribArray(attribute_vcol);
-
-
-            GL.Flush();
+            GL.Light(LightName.Light0, LightParameter.Position, new float[] { xPos, yPos, zPos, 1.0f });
+            //GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 1f, 0f, 0f, 1f });
+            GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1.0f, 1f, 0f, 1f });
+            //GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            //GL.Light(LightName.Light0, LightParameter.SpotDirection, new float[] { xPos, yPos, zPos });
+            //GL.Light(LightName.Light0, LightParameter.SpotCutoff, new float[] { 60f });
+            //GL.Light(LightName.Light0, LightParameter.SpotExponent, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.LightModel(LightModelParameter.LightModelAmbient, new float[] { 0.1f, 0.1f, 0.1f, 1.0f });
+            //GL.LightModel(LightModelParameter.LightModelTwoSide, 1);
+            //GL.LightModel(LightModelParameter.LightModelLocalViewer, 1);
+            GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Light0);
         }
 
         #endregion
-        */
 
         public void AddKeyEvent(Key key, Action<InputEvent> ev)
         {
@@ -190,7 +97,8 @@ namespace Engine2.Core
 
         protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad(e);
+            base.OnLoad(e);           
+
             level.Init();
 
             // Set the View to center on the level
@@ -247,6 +155,8 @@ namespace Engine2.Core
         {
             base.OnRenderFrame(e);
 
+            
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
 
@@ -257,7 +167,7 @@ namespace Engine2.Core
 
             level.Render();
 
-            
+            OnColorLoad(level.Actors[0].Position);
 
             this.SwapBuffers();
         }

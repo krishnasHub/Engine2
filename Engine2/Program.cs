@@ -12,6 +12,7 @@ using Engine2.Core;
 // https://www.youtube.com/watch?v=SZuPxXAkfyA
 
 // Next tutorial: https://www.youtube.com/watch?v=cZuJ67px5xE&t=385s
+// Lightings: http://www.glprogramming.com/red/chapter05.html
 
 namespace Engine2
 {
