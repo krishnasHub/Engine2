@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 
 namespace Engine2.Lighting.Light
 {
@@ -19,6 +20,7 @@ namespace Engine2.Lighting.Light
 
         // Default value
         protected float intensity = 4f;
+
 
         /// <summary>
         /// Has to be anything greater than 4 in order ot be seen!
@@ -34,6 +36,7 @@ namespace Engine2.Lighting.Light
                     intensity = value;
             }
         }
+        public Color Color = Color.White;
 
         ~LightSource()
         {
@@ -66,6 +69,18 @@ namespace Engine2.Lighting.Light
             // Do not call base.Init();
         }
 
+        private float[] getColorArray(Color c)
+        {
+            float[] array = new float[4];
+
+            array[0] = c.R / (float) byte.MaxValue;
+            array[1] = c.G / (float)byte.MaxValue;
+            array[2] = c.B / (float)byte.MaxValue;
+            array[3] = c.A / (float)byte.MaxValue;
+
+            return array;
+        }
+
         public override void Render()
         {
             // Should have it's own render code, not the base class's rendering..
@@ -75,7 +90,8 @@ namespace Engine2.Lighting.Light
 
             GL.Light(LightName, LightParameter.Position, new float[] { xPos, yPos, intensity, 1.0f });
             //GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 1f, 0f, 0f, 1f });
-            GL.Light(LightName, LightParameter.Diffuse, new float[] { 1.0f, 1f, 0f, 1f });
+            
+            GL.Light(LightName, LightParameter.Diffuse, getColorArray(Color));
             //GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
             //GL.Light(LightName.Light0, LightParameter.SpotDirection, new float[] { xPos, yPos, zPos });
             //GL.Light(LightName.Light0, LightParameter.SpotCutoff, new float[] { 60f });
