@@ -220,7 +220,8 @@ namespace Engine2.Core
         {
             foreach (var a in actors)
             {
-                a.Init();
+                if(a.CanInit)
+                    a.Init();
             }
 
             var bindActor = actors.FirstOrDefault(a => a.BindToView);
@@ -247,6 +248,9 @@ namespace Engine2.Core
         {
             foreach (var a in actors)
             {
+                if (!a.IsCollidable)
+                    continue;
+
                 if (gridPhysicsMap != null)
                 {
                     var l = a.Position / Constants.GRID_SIZE;
@@ -281,7 +285,7 @@ namespace Engine2.Core
         {
             actors.ForEach(a =>
             {
-                if (a.PhysicsComponent != null)
+                if (a.PhysicsComponent != null && a.IsCollidable)
                     actors.Where(c => a != c).ToList().ForEach(b =>
                     {
                         if (a.PhysicsComponent.CheckCollission(b))
@@ -308,7 +312,7 @@ namespace Engine2.Core
 
             if (LevelPhysics != null)
             {
-                actors.ForEach(a =>
+                actors.Where(ac => ac.IsCollidable).ToList().ForEach(a =>
                 {
                     if (this.CanActorMoveTo(a, a.Position + a.Velocity + LevelPhysics.GetGravityVector()))
                     {

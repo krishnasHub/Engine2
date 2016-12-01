@@ -25,7 +25,7 @@ namespace Engine2.Core
 
 
         #region Lighting Region
-
+        /*
         float xPos = 0f;
         float yPos = 0f;
         float zPos = 50f;
@@ -50,6 +50,7 @@ namespace Engine2.Core
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
         }
+        */
 
         #endregion
 
@@ -167,7 +168,7 @@ namespace Engine2.Core
 
             level.Render();
 
-            OnColorLoad(level.Actors[0].Position);
+            //OnColorLoad(level.Actors[0].Position);
 
             this.SwapBuffers();
         }

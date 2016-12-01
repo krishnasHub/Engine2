@@ -19,6 +19,21 @@ namespace Engine2.Actor
 
     public class GameActor
     {
+        public GameActor ParentActor;
+        public List<GameActor> ChildActors;
+
+        protected bool isCollidable = true;
+
+        public bool IsCollidable
+        {
+            get { return isCollidable; }
+        }
+
+        public bool CanInit
+        {
+            get { return canInit; }
+        }
+
         private string textureName;
         Texture2D Texture;
         
@@ -67,6 +82,9 @@ namespace Engine2.Actor
         public float BoundingRadius;
         public BoundingShape BoundingShape = BoundingShape.BoundingBox;
         private bool boundingBoxSet = false;
+        protected bool canInit = true;
+
+        public bool ReadyToBeDestroyed = false;
 
         public bool InAir = false;
 
@@ -122,6 +140,9 @@ namespace Engine2.Actor
 
         public virtual void Init()
         {
+            if (!canInit)
+                return;
+
             if (Velocity == null)
                 Velocity = new Vector2(0f, 0f);
 
