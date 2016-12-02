@@ -14,29 +14,49 @@ namespace Engine2.Lighting.Light
     public class LightSource : GameActor
     {
 
-        private static int LightSourceCount = 0;
+        protected static int LightSourceCount = 0;
 
         protected LightName LightName;
-
         // Default value
-        protected float intensity = 4f;
+        //protected float intensity = 0.9f;
 
+
+        protected float zIndex = 50f;
+
+        public float ZIndex
+        {
+            get { return zIndex; }
+
+            set { if (value > 3) zIndex = value; }
+        }
+
+
+        private float getCalculatedintensity(float v)
+        {
+            return 1f - v / 1000;
+        }
 
         /// <summary>
-        /// Has to be anything greater than 4 in order ot be seen!
+        /// Has to be between 0 and 1000
         /// </summary>
-        public float Intensity
+        protected float Intensity = 100f;
+
+        public void SetIntensity(float value)
         {
-            get { return intensity; }
-            set
-            {
-                if (value <= 4)
-                    intensity = 4f;
-                else
-                    intensity = value;
-            }
+            if (value > 0 && value <= 1000f)
+                Intensity = value;
         }
-        public Color Color = Color.White;
+
+        public float GetIntensity()
+        {
+            return Intensity;
+        }
+        
+        private float[] colorArray = new float[] { 1f, 1f, 1f, 1f };
+
+        public bool IsDiffused = true;
+        public bool IsSpecular = false;
+        public bool IsAmbient = false;
 
         ~LightSource()
         {
@@ -54,10 +74,24 @@ namespace Engine2.Lighting.Light
             return l;
         }
 
+        public void SetColor(Color c)
+        {
+            colorArray[0] = c.R / (float)byte.MaxValue;
+            colorArray[1] = c.G / (float)byte.MaxValue;
+            colorArray[2] = c.B / (float)byte.MaxValue;
+            colorArray[3] = c.A / (float)byte.MaxValue;
+        }
+
+        public void SetColor(float r = 1f, float g = 1f, float b = 1f, float a = 1f)
+        {
+            colorArray[0] = r;
+            colorArray[1] = g;
+            colorArray[0] = b;
+            colorArray[1] = a;
+        }
+
         protected LightSource()
         {
-            // No Parent
-
             isCollidable = false;
             canInit = false;
 
@@ -69,17 +103,6 @@ namespace Engine2.Lighting.Light
             // Do not call base.Init();
         }
 
-        private float[] getColorArray(Color c)
-        {
-            float[] array = new float[4];
-
-            array[0] = c.R / (float) byte.MaxValue;
-            array[1] = c.G / (float)byte.MaxValue;
-            array[2] = c.B / (float)byte.MaxValue;
-            array[3] = c.A / (float)byte.MaxValue;
-
-            return array;
-        }
 
         public override void Render()
         {
@@ -88,17 +111,31 @@ namespace Engine2.Lighting.Light
             float xPos = ParentActor != null ? ParentActor.Position.X : Position.X;
             float yPos = ParentActor != null ? ParentActor.Position.Y : Position.Y;
 
-            GL.Light(LightName, LightParameter.Position, new float[] { xPos, yPos, intensity, 1.0f });
-            //GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 1f, 0f, 0f, 1f });
-            
-            GL.Light(LightName, LightParameter.Diffuse, getColorArray(Color));
-            //GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.Light(LightName, LightParameter.Position, new float[] { xPos, yPos, zIndex, 1.0f });
+
+            if(IsDiffused)
+                GL.Light(LightName, LightParameter.Diffuse, colorArray);
+
+            if(IsSpecular)
+                GL.Light(LightName, LightParameter.Specular, colorArray);
+
+            if(IsAmbient)
+                GL.Light(LightName, LightParameter.Ambient, colorArray);
+
             //GL.Light(LightName.Light0, LightParameter.SpotDirection, new float[] { xPos, yPos, zPos });
             //GL.Light(LightName.Light0, LightParameter.SpotCutoff, new float[] { 60f });
             //GL.Light(LightName.Light0, LightParameter.SpotExponent, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-            GL.LightModel(LightModelParameter.LightModelAmbient, new float[] { 0.1f, 0.1f, 0.1f, 1.0f });
+            //GL.LightModel(LightModelParameter.LightModelAmbient, new float[] { 0.1f, 0.1f, 0.1f, 1.0f });
             //GL.LightModel(LightModelParameter.LightModelTwoSide, 1);
             //GL.LightModel(LightModelParameter.LightModelLocalViewer, 1);
+
+            //GL.Light(LightName, LightParameter.SpotCutoff, new float[] { 180f });
+            //GL.Light(LightName, LightParameter.SpotDirection, new float[] { 1f, 1f, 0f });
+            //GL.Light(LightName, LightParameter.ConstantAttenuation, new float[] { 0.2f });
+
+            var intensity = getCalculatedintensity(Intensity);
+            GL.Light(LightName, LightParameter.ConstantAttenuation, intensity);
+
             GL.Enable(EnableCap.Lighting);
             GL.Enable((EnableCap) LightName);
         }

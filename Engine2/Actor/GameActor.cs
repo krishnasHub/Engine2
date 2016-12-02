@@ -20,13 +20,14 @@ namespace Engine2.Actor
     public class GameActor
     {
         public GameActor ParentActor;
-        public List<GameActor> ChildActors;
+        public List<GameActor> ChildActors = new List<GameActor>();
 
         protected bool isCollidable = true;
 
         public bool IsCollidable
         {
             get { return isCollidable; }
+            set { isCollidable = value; }
         }
 
         public bool CanInit

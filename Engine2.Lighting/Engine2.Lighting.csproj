@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Light\DirectedLightSource.cs" />
     <Compile Include="Light\LightSource.cs" />
     <Compile Include="Light\LightSourceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

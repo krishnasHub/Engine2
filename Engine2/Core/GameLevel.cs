@@ -134,7 +134,7 @@ namespace Engine2.Core
                 int h = int.Parse(doc.DocumentElement.GetAttribute("height"));
 
 
-                XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer 1']");
+                XmlNode tileLayer = doc.DocumentElement.SelectSingleNode("layer[@name='Tile Layer']");
                 var tiles = tileLayer.SelectSingleNode("data").InnerText.Trim().Split(',');
 
                 var imgNode = doc.DocumentElement.SelectSingleNode("tileset").SelectSingleNode("image");
@@ -216,6 +216,13 @@ namespace Engine2.Core
             }
         }
 
+        private void removeDestroyedActors()
+        {
+            var deletedActorCount = actors.RemoveAll(a => a.ReadyToBeDestroyed);
+
+            Console.WriteLine("Deleted " + deletedActorCount + " actors.");
+        }
+
         public virtual void Init()
         {
             foreach (var a in actors)
@@ -283,10 +290,10 @@ namespace Engine2.Core
 
         private void checkCollissionsWithOtherActors()
         {
-            actors.ForEach(a =>
+            actors.Where(ac => ac.IsCollidable).ToList().ForEach(a =>
             {
-                if (a.PhysicsComponent != null && a.IsCollidable)
-                    actors.Where(c => a != c).ToList().ForEach(b =>
+                if (a.PhysicsComponent != null)
+                    actors.Where(c => c.IsCollidable && a != c).ToList().ForEach(b =>
                     {
                         if (a.PhysicsComponent.CheckCollission(b))
                         {
@@ -305,11 +312,9 @@ namespace Engine2.Core
             }
         }
 
-        public virtual void Tick()
-        {
-            // Reposition the camera if the bound actor has moved out of frame
-            repositionView();
 
+        private void applyLevelPhysics()
+        {
             if (LevelPhysics != null)
             {
                 actors.Where(ac => ac.IsCollidable).ToList().ForEach(a =>
@@ -324,9 +329,17 @@ namespace Engine2.Core
                         a.InAir = false;
                         //a.Velocity = Vector2.Zero;
                     }
-                });                
+                });
             }
-                
+        }
+
+        public virtual void Tick()
+        {
+            // Reposition the camera if the bound actor has moved out of frame
+            repositionView();
+
+            // Apply Level Physics, if something is configured.
+            applyLevelPhysics();
 
             // Tick every actor
             tickActors();
@@ -336,6 +349,9 @@ namespace Engine2.Core
 
             // Check for collissions between each actor
             checkCollissionsWithOtherActors();
+
+            // Delete actors that are not active as of now..
+            removeDestroyedActors();
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)
