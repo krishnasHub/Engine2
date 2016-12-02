@@ -13,34 +13,26 @@ namespace Engine2.Lighting.Light
 {
     public class LightSource : GameActor
     {
-
         protected static int LightSourceCount = 0;
 
         protected LightName LightName;
         // Default value
         //protected float intensity = 0.9f;
-
-
         protected float zIndex = 50f;
-
         public float ZIndex
         {
             get { return zIndex; }
 
             set { if (value > 3) zIndex = value; }
         }
-
-
         private float getCalculatedintensity(float v)
         {
             return 1f - v / 1000;
         }
-
         /// <summary>
         /// Has to be between 0 and 1000
         /// </summary>
         protected float Intensity = 100f;
-
         public void SetIntensity(float value)
         {
             if (value > 0 && value <= 1000f)

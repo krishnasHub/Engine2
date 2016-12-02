@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace Engine2.Physics.Actor
 {
+    /// <summary>
+    /// This class contains the collision detection code for Actors. It's kept as simple as bounding box collision between:
+    /// 1. Box and Box
+    /// 2. Box and Circle
+    /// 3. Circle and Circle
+    /// </summary>
     public class ActorPhysics : IActorPhysics
     {
         private GameActor actor;

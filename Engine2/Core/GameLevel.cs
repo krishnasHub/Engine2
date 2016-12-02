@@ -13,6 +13,10 @@ using System.Xml;
 
 namespace Engine2.Core
 {
+    /// <summary>
+    /// This is the basic Level class that is used to get a Level ready on screen. You can subclass this to define your own Levels.
+    /// This is not an abstract class, so you can directly create an object of it, give it a tmx file to load the level and watch it rendered.
+    /// </summary>
     public abstract class GameLevel
     {
         protected Block[,] grid;
@@ -21,13 +25,13 @@ namespace Engine2.Core
         public GameActor BoundActor;
         protected Texture2D tileSet;
         protected List<GameActor> actors;
-
         protected Vector2 tileSize;
         protected int blocksInRow;
-
         protected Dictionary<int, IBlockPhysics> gridPhysicsMap;
 
         public ILevelPhysics LevelPhysics;
+
+        public GameBackground GameBackground;
 
         public Block this[int x, int y]
         {
@@ -65,6 +69,9 @@ namespace Engine2.Core
 
         public void AddActor(GameActor a)
         {
+            if (a == null)
+                return;
+
             if (actors == null)
                 actors = new List<GameActor>();
 
@@ -190,6 +197,9 @@ namespace Engine2.Core
 
         public virtual void Render()
         {
+            if (GameBackground != null)
+                GameBackground.Render();
+
             for (int x = 0; x < this.Width; x++)
             {
                 for (int y = 0; y < this.Height; y++)
@@ -214,6 +224,7 @@ namespace Engine2.Core
             {
                 a.Render();
             }
+
         }
 
         private void removeDestroyedActors()
@@ -237,8 +248,14 @@ namespace Engine2.Core
                 BoundActor = bindActor;
                 ViewCenterPos = BoundActor.Position;
             }
-        }
 
+            if (GameBackground != null)
+            {
+                GameBackground.WindowWidth = Width;
+                GameBackground.WindowHeight = Height;
+                GameBackground.Init();
+            }
+        }
 
         private void repositionView()
         {
@@ -312,7 +329,6 @@ namespace Engine2.Core
             }
         }
 
-
         private void applyLevelPhysics()
         {
             if (LevelPhysics != null)
@@ -352,6 +368,14 @@ namespace Engine2.Core
 
             // Delete actors that are not active as of now..
             removeDestroyedActors();
+
+            if (GameBackground != null)
+            {
+                GameBackground.Tick();
+                GameBackground.WindowWidth = Width;
+                GameBackground.WindowHeight = Height;
+            }
+                
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)

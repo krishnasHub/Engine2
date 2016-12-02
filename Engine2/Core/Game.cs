@@ -20,39 +20,10 @@ namespace Engine2.Core
         View view;
         private GameLevel level;
 
+        public Color BackgroundColor = Color.CornflowerBlue;
+
         private Dictionary<Key, List<Action<InputEvent>>> keyEventMap;
         private Dictionary<MouseButton, List<Action<InputEvent>>> mouseEventMap;
-
-
-        #region Lighting Region
-        /*
-        float xPos = 0f;
-        float yPos = 0f;
-        float zPos = 50f;
-
-        protected void OnColorLoad(Vector2 position)
-        {
-            //GL.Enable(EnableCap.DepthTest);
-            
-            xPos = position.X;
-            yPos = position.Y;
-
-            GL.Light(LightName.Light0, LightParameter.Position, new float[] { xPos, yPos, zPos, 1.0f });
-            //GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 1f, 0f, 0f, 1f });
-            GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1.0f, 1f, 0f, 1f });
-            //GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-            //GL.Light(LightName.Light0, LightParameter.SpotDirection, new float[] { xPos, yPos, zPos });
-            //GL.Light(LightName.Light0, LightParameter.SpotCutoff, new float[] { 60f });
-            //GL.Light(LightName.Light0, LightParameter.SpotExponent, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-            GL.LightModel(LightModelParameter.LightModelAmbient, new float[] { 0.1f, 0.1f, 0.1f, 1.0f });
-            //GL.LightModel(LightModelParameter.LightModelTwoSide, 1);
-            //GL.LightModel(LightModelParameter.LightModelLocalViewer, 1);
-            GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Light0);
-        }
-        */
-
-        #endregion
 
         public void AddKeyEvent(Key key, Action<InputEvent> ev)
         {
@@ -111,7 +82,6 @@ namespace Engine2.Core
             //onShaderLoad();
         }
 
-
         private void checkKeyEvents()
         {
             if (keyEventMap != null)
@@ -156,19 +126,13 @@ namespace Engine2.Core
         {
             base.OnRenderFrame(e);
 
-            
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.ClearColor(Color.CornflowerBlue);
-
-            //RenderShaderFrame();
+            GL.ClearColor(BackgroundColor);
 
             SpriteBatch.Begin(this.Width, this.Height);
             view.ApplyTransform();
 
             level.Render();
-
-            //OnColorLoad(level.Actors[0].Position);
 
             this.SwapBuffers();
         }

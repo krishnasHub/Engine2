@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace Engine2.Lighting.Light
 {
+    /// <summary>
+    /// The LightSourceManager is the Factory class that produces a LightSource (if it can) based on the requirements.
+    /// </summary>
     public class LightSourceManager
     {
         public static List<LightSource> Lights = new List<LightSource>();
-
         public static void SetAmientLight(Color c)
         {
             float[] colorArray = new float[4];
@@ -24,13 +26,11 @@ namespace Engine2.Lighting.Light
 
             SetAmbientLight(colorArray);
         }
-
         public static void SetAmientLight(float r = 1f, float g = 1f, float b = 1f, float a = 1f)
         {
             float[] array = { r, g, b, a };
             SetAmbientLight(array);
         }
-
         private static void SetAmbientLight(float[] colorArray)
         {
             GL.LightModel(LightModelParameter.LightModelAmbient, colorArray);
@@ -62,7 +62,6 @@ namespace Engine2.Lighting.Light
 
             return light;
         }
-
         public static DirectedLightSource GetDirectedLightSource(GameActor parent = null)
         {
             // Yes, this is kinda redundant, but it's easy to monitor them at LightSourceManager level than at the root LightSource level.
@@ -85,6 +84,5 @@ namespace Engine2.Lighting.Light
 
             return light;
         }
-
     }
 }

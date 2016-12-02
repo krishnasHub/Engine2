@@ -11,50 +11,35 @@ using System.Threading.Tasks;
 
 namespace Engine2.Actor
 {
+    /// <summary>
+    /// The basic shapes that the bounding boxes use are either a Bounding Box (a rectangle) or a circle.
+    /// </summary>
     public enum BoundingShape
     {
         BoundingBox,
         BoundingCircle
     }
 
+    /// <summary>
+    /// This is the base class for all Actors that you want on the level.
+    /// This isn't an abstract class. You can directly use it hands down without wasting any time.
+    /// Just add a texture and see it on the screen.
+    /// The more ideal way of building actors is to derive your own Actor class from this class where you defin how your actor behaves.
+    /// </summary>
     public class GameActor
     {
         public GameActor ParentActor;
         public List<GameActor> ChildActors = new List<GameActor>();
-
-        protected bool isCollidable = true;
-
         public bool IsCollidable
         {
             get { return isCollidable; }
             set { isCollidable = value; }
         }
-
         public bool CanInit
         {
             get { return canInit; }
         }
-
-        private string textureName;
-        Texture2D Texture;
-        
-        protected Vector2 position;
         public GameLevel ParentLevel;
-
-        private TileSheetManager tileSheet;
-        private bool useTileSheetManager = false;
-
-        public TileSheetManager TileSheet
-        {
-            set
-            {
-                tileSheet = value;
-                useTileSheetManager = true;
-            }
-
-            get { return tileSheet; }
-        }
-
         public Vector2 Position
         {
             set
@@ -66,11 +51,11 @@ namespace Engine2.Actor
                         //this.position -= value;
                         return;
                     }
-                        
+
                 }
 
                 this.position = value;
-                if(this.Texture.Id != -1 && Scale != null)
+                if (this.Texture.Id != -1 && Scale != null)
                     Center = new Vector2(position.X + (Texture.Width * Scale.X) / 2f, position.Y + (Texture.Height * Scale.Y) / 2f);
             }
 
@@ -82,19 +67,34 @@ namespace Engine2.Actor
         public RectangleF BoundingBox;
         public float BoundingRadius;
         public BoundingShape BoundingShape = BoundingShape.BoundingBox;
-        private bool boundingBoxSet = false;
-        protected bool canInit = true;
-
         public bool ReadyToBeDestroyed = false;
-
-        public bool InAir = false;
-
-        private IActorPhysics physicsComponent;
+        public bool InAir = false;        
         public bool BindToView = false;
-
         public Vector2 JumpVector = new Vector2(0f, -5f);
         public float BounceFactor = 2f;
+        public TileSheetManager TileSheet
+        {
+            set
+            {
+                tileSheet = value;
+                useTileSheetManager = true;
+            }
 
+            get { return tileSheet; }
+        }
+
+        protected bool isCollidable = true;
+        protected Vector2 position;
+        protected bool canInit = true;
+
+        private string textureName;
+        private TileSheetManager tileSheet;
+        private bool useTileSheetManager = false;
+        private IActorPhysics physicsComponent;
+        private bool boundingBoxSet = false;
+
+        Texture2D Texture;
+        
         public void Jump()
         {
             if (InAir)
