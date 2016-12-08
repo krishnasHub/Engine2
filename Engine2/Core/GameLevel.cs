@@ -76,7 +76,9 @@ namespace Engine2.Core
                 actors = new List<GameActor>();
 
             a.ParentLevel = this;
-            actors.Add(a);
+
+            if (!actors.Contains(a))
+                actors.Add(a);
         }
 
         public bool CanActorMoveTo(GameActor actor, Vector2 pos)
@@ -268,57 +270,87 @@ namespace Engine2.Core
             }
         }
 
+
+        private void CheckcollissionWithBlocks(GameActor a)
+        {
+            var l = a.Position / Constants.GRID_SIZE;
+            var xl = (int)l.X - 5;
+            var yl = (int)l.Y - 5;
+            var xr = ((int)(a.Position.X + a.BoundingBox.Right) / Constants.GRID_SIZE) + 5;
+            var yr = ((int)(a.Position.Y + a.BoundingBox.Bottom) / Constants.GRID_SIZE) + 5;
+
+            for (int x = xl; x <= xr; x++)
+                for (int y = yl; y <= yr; y++)
+                {
+                    if (!gridPhysicsMap.ContainsKey(this[x, y].Type))
+                        continue;
+
+                    var p = gridPhysicsMap[this[x, y].Type];
+
+                    if (p != null)
+                    {
+                        if (p.CheckCollision(a, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
+                            new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
+                        {
+                            p.HandleCollission(a);
+                        }
+
+                    }
+                }
+
+            // Once collission is done for this actor, call the same function for all the children it has.
+            a.GetChildActors().ForEach(ca =>
+            {
+                // If the child actor is collidable, 
+                if (ca != null && ca.IsCollidable)
+                {
+                    // Check collission for it's children recursively.
+                    CheckcollissionWithBlocks(ca);
+                }
+            });
+        }
+
         private void CheckcollissionWithBlocks()
         {
+            // Loop for every actor
             foreach (var a in actors)
             {
+                // If it is not collidable, then move on..
                 if (!a.IsCollidable)
                     continue;
 
                 if (gridPhysicsMap != null)
                 {
-                    var l = a.Position / Constants.GRID_SIZE;
-                    var xl = (int)l.X - 5;
-                    var yl = (int)l.Y - 5;
-                    var xr = ((int)(a.Position.X + a.BoundingBox.Right) / Constants.GRID_SIZE) + 5;
-                    var yr = ((int)(a.Position.Y + a.BoundingBox.Bottom) / Constants.GRID_SIZE) + 5;
-
-                    for (int x = xl; x <= xr; x++)
-                        for (int y = yl; y <= yr; y++)
-                        {
-                            if (!gridPhysicsMap.ContainsKey(this[x, y].Type))
-                                continue;
-
-                            var p = gridPhysicsMap[this[x, y].Type];
-
-                            if (p != null)
-                            {
-                                if (p.CheckCollision(a, new Vector2(x * Constants.GRID_SIZE, y * Constants.GRID_SIZE),
-                                    new Vector2(Constants.GRID_SIZE, Constants.GRID_SIZE)))
-                                {
-                                    p.HandleCollission(a);
-                                }
-                                
-                            }
-                        }
+                    // Check collission for that actor
+                    CheckcollissionWithBlocks(a);                    
                 }
             }
         }
 
+        private void checkCollissionsWithOtherActors(GameActor a)
+        {
+            if (a.PhysicsComponent != null)
+                // Check this actor with only other actors and NOT it's parent and they are not siblings..
+                actors.Where(c => c.IsCollidable && a != c && !c.GetChildActors().Contains(a)).ToList().ForEach(b =>
+                {
+                    if (a.ParentActor != b.ParentActor && a.PhysicsComponent.CheckCollission(b))
+                    {
+                        a.onHit(b);
+                        b.onHit(a);
+                    }
+                });
+
+            // Once done colliding it, check with other actors as well.
+            a.GetChildActors().ForEach(ca => 
+            {
+                if (ca != null && ca.IsCollidable)
+                    checkCollissionsWithOtherActors(ca);
+            });
+        }
+
         private void checkCollissionsWithOtherActors()
         {
-            actors.Where(ac => ac.IsCollidable).ToList().ForEach(a =>
-            {
-                if (a.PhysicsComponent != null)
-                    actors.Where(c => c.IsCollidable && a != c).ToList().ForEach(b =>
-                    {
-                        if (a.PhysicsComponent.CheckCollission(b))
-                        {
-                            a.onHit(b);
-                            b.onHit(a);
-                        }
-                    });
-            });
+            actors.Where(ac => ac.IsCollidable).ToList().ForEach(a => checkCollissionsWithOtherActors(a));
         }
 
         private void tickActors()
@@ -369,13 +401,20 @@ namespace Engine2.Core
             // Delete actors that are not active as of now..
             removeDestroyedActors();
 
+            // Update the game background
+            updateBackground();
+
+
+        }
+
+        private void updateBackground()
+        {
             if (GameBackground != null)
             {
                 GameBackground.Tick();
                 GameBackground.WindowWidth = Width;
                 GameBackground.WindowHeight = Height;
             }
-                
         }
 
         protected void DrawSprite(RectangleF source, int x, int y)

@@ -52,8 +52,7 @@ namespace Engine2.Lighting.Light
             {
                 if(parent != null)
                 {
-                    light.ParentActor = parent;
-                    parent.ChildActors.Add(light);
+                    parent.AddChild(light);
                 }
 
                 light.IsCollidable = false;
@@ -74,8 +73,7 @@ namespace Engine2.Lighting.Light
             {
                 if (parent != null)
                 {
-                    light.ParentActor = parent;
-                    parent.ChildActors.Add(light);
+                    parent.AddChild(light);
                 }
 
                 light.IsCollidable = false;

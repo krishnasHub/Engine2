@@ -29,7 +29,8 @@ namespace Engine2.Actor
     public class GameActor
     {
         public GameActor ParentActor;
-        public List<GameActor> ChildActors = new List<GameActor>();
+        private List<GameActor> ChildActors = new List<GameActor>();
+        public GameActor RootActor = null;
         public bool IsCollidable
         {
             get { return isCollidable; }
@@ -95,6 +96,31 @@ namespace Engine2.Actor
 
         Texture2D Texture;
         
+
+        public void AddChild(GameActor child)
+        {
+            if (child == null)
+                return;
+
+            ChildActors.Add(child);
+            child.ParentActor = this;
+            child.ParentLevel = this.ParentLevel;
+
+            if(RootActor == null)
+            {
+                child.RootActor = this;
+            }
+            else
+            {
+                child.RootActor = this.RootActor;
+            }
+        }
+
+        public List<GameActor> GetChildActors()
+        {
+            return ChildActors;
+        }
+
         public void Jump()
         {
             if (InAir)
@@ -194,7 +220,17 @@ namespace Engine2.Actor
                 // MOstly used in case of a circle as a bounding box
                 if (Center == null)
                     Center = new Vector2(position.X + (Texture.Width * Scale.X) / 2f, position.Y + (Texture.Height * Scale.Y) / 2f);
-            }            
+            }
+
+            // Finally Init the children
+            ChildActors.ForEach(a =>
+            {
+                if (a == null)
+                    return;
+
+                if (a.CanInit)
+                    a.Init();
+            });
             
         }
 
@@ -202,6 +238,15 @@ namespace Engine2.Actor
         {
             position += Velocity;
             Center += Velocity;
+
+            // Finally Tick the children
+            ChildActors.ForEach(a =>
+            {
+                if (a == null)
+                    return;
+
+                a.Tick();
+            });
         }
 
         public virtual void Render()
@@ -213,7 +258,16 @@ namespace Engine2.Actor
             else
             {
                 SpriteBatch.Draw(Texture, position, Scale, Color.White, Vector2.Zero);
-            }            
+            }
+
+            // Finally Render the children
+            ChildActors.ForEach(a =>
+            {
+                if (a == null)
+                    return;
+
+                a.Render();
+            });
         }
 
         public virtual void onHit(GameActor otherActor)

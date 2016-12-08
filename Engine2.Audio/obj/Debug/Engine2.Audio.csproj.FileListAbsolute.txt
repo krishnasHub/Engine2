@@ -1,0 +1,10 @@
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\Engine2.Audio.dll.config
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\Engine2.Audio.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\Engine2.Audio.pdb
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\Engine2.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\OpenTK.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\Engine2.pdb
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\bin\Debug\OpenTK.xml
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\obj\Debug\Engine2.Audio.csprojResolveAssemblyReference.cache
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\obj\Debug\Engine2.Audio.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2.Audio\obj\Debug\Engine2.Audio.pdb
