@@ -233,7 +233,8 @@ namespace Engine2.Core
         {
             var deletedActorCount = actors.RemoveAll(a => a.ReadyToBeDestroyed);
 
-            Console.WriteLine("Deleted " + deletedActorCount + " actors.");
+            if(deletedActorCount > 0)
+                Console.WriteLine("Deleted " + deletedActorCount + " actors.");
         }
 
         public virtual void Init()

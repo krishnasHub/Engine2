@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+
+using Engine2.Util;
 
 namespace Engine2.Audio
 {
@@ -14,18 +17,29 @@ namespace Engine2.Audio
         public bool IsGlobal = false;
         public SoundState CurrentState;
 
+        private SoundPlayer player;
+        private bool isPlaying = false;
+
         public BasicSound(string soundFile)
         {
             this.soundFile = soundFile;
 
             this.canInit = true;
             this.IsCollidable = false;
+
+            CurrentState = SoundState.Stop;
+        }
+
+        ~BasicSound()
+        {
+            if (player != null && isPlaying)
+                player.Stop();
         }
 
         public override void Init()
         {
-            // Init the sound file
-            CurrentState = SoundState.Stop;
+            player = new SoundPlayer(Constants.RootFolder + "/" + soundFile);
+            player.Load();
         }
 
         public override void Render()
@@ -40,15 +54,25 @@ namespace Engine2.Audio
         {
             // Check if we need to continue playing this audio. If not. kill it
 
-            switch(CurrentState)
+            switch (CurrentState)
             {
                 case SoundState.Play:
+                    if(!isPlaying)
+                    {
+                        player.Play();
+                        isPlaying = true;
+                    }
                     break;
 
                 case SoundState.Pause:
                     break;
 
                 case SoundState.Stop:
+                    if(isPlaying)
+                    {
+                        player.Stop();
+                        isPlaying = false;
+                    }                    
                     break;
             }
         }
