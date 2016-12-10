@@ -330,15 +330,37 @@ namespace Engine2.Core
         private void checkCollissionsWithOtherActors(GameActor a)
         {
             if (a.PhysicsComponent != null)
-                // Check this actor with only other actors and NOT it's parent and they are not siblings..
-                actors.Where(c => c.IsCollidable && a != c && !c.GetChildActors().Contains(a)).ToList().ForEach(b =>
+
+                // Get all colidable objects
+                actors.Where(c => c.IsCollidable).ToList().ForEach(b => 
                 {
-                    if (a.ParentActor != b.ParentActor && a.PhysicsComponent.CheckCollission(b))
+                    // If they have the same root actors, then don't colide.
+                    bool checkCollision = false;
+
+                    // If either of them don't have a root actor, then check for collision
+                    if(a.RootActor == null || b.RootActor == null)
                     {
-                        a.onHit(b);
-                        b.onHit(a);
+                        checkCollision = true;
+                    } 
+                    // If they both have root actors and these root actors are different, then check for collision
+                    else if (a.RootActor != b.RootActor)
+                    {
+                        checkCollision = true;
                     }
+
+                    // If we can check collision, then check it!
+                    if(checkCollision)
+                    {
+                        if (a.PhysicsComponent.CheckCollission(b))
+                        {
+                            a.onHit(b);
+                            b.onHit(a);
+                        }
+                    }
+
                 });
+
+                
 
             // Once done colliding it, check with other actors as well.
             a.GetChildActors().ForEach(ca => 

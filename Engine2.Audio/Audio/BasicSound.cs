@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Engine2.Audio
 {
-    class BasicSound : GameActor
+    public class BasicSound : GameActor
     {
         protected string soundFile;
 
