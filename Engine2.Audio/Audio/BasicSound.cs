@@ -5,6 +5,7 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 using Engine2.Util;
 
@@ -19,6 +20,24 @@ namespace Engine2.Audio
 
         private SoundPlayer player;
         private bool isPlaying = false;
+
+        private uint volume;
+
+
+        public void SetVolume(float vale)
+        {
+            int NewVolume = (int) ((ushort.MaxValue) * vale);
+            // Set the same volume for both the left and the right channels
+            uint NewVolumeAllChannels = (((uint)NewVolume & 0x0000ffff) | ((uint)NewVolume << 16));
+            // Set the volume
+            waveOutSetVolume(IntPtr.Zero, NewVolumeAllChannels);
+        }
+
+        [DllImport("winmm.dll")]
+        public static extern int waveOutGetVolume(IntPtr hwo, out uint dwVolume);
+
+        [DllImport("winmm.dll")]
+        public static extern int waveOutSetVolume(IntPtr hwo, uint dwVolume);
 
         public BasicSound(string soundFile)
         {
@@ -40,6 +59,8 @@ namespace Engine2.Audio
         {
             player = new SoundPlayer(Constants.RootFolder + "/" + soundFile);
             player.Load();
+
+            
         }
 
         public override void Render()
