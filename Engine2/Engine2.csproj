@@ -54,6 +54,7 @@
     <Compile Include="Actor\GameActor.cs" />
     <Compile Include="Actor\IActorPhysics.cs" />
     <Compile Include="Actor\IBlockPhysics.cs" />
+    <Compile Include="Actor\PawnSensing.cs" />
     <Compile Include="Actor\TileSheetManager.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\GameLevel.cs" />

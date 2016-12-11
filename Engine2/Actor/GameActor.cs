@@ -95,7 +95,24 @@ namespace Engine2.Actor
         private bool boundingBoxSet = false;
 
         Texture2D Texture;
-        
+        protected PawnSensing PawnSensing;
+
+        public void AddPawnSensing(float defaultDist = 100.0f)
+        {
+            PawnSensing = new PawnSensing(this);
+            PawnSensing.PawnSensed = PawnSensed;
+            PawnSensing.SensingRadius = defaultDist;
+        }
+
+        public PawnSensing GetPawnSensingComponent()
+        {
+            return PawnSensing;
+        }
+
+        public virtual void PawnSensed(GameActor otherActor)
+        {
+            // Need to be handled by your own code.
+        }
 
         public void AddChild(GameActor child)
         {
@@ -247,6 +264,11 @@ namespace Engine2.Actor
 
                 a.Tick();
             });
+
+            if(PawnSensing != null)
+            {
+                PawnSensing.CheckPawn();
+            }
         }
 
         public virtual void Render()

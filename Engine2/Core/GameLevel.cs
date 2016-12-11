@@ -24,7 +24,7 @@ namespace Engine2.Core
         public Vector2 ViewCenterPos;
         public GameActor BoundActor;
         protected Texture2D tileSet;
-        protected List<GameActor> actors;
+        protected static List<GameActor> actors;
         protected Vector2 tileSize;
         protected int blocksInRow;
         protected Dictionary<int, IBlockPhysics> gridPhysicsMap;
@@ -54,10 +54,7 @@ namespace Engine2.Core
         {
             get { return tileSet; }
         }
-        public List<GameActor> Actors
-        {
-            get { return actors; }
-        }
+
 
         public void SetBlockPhysics(int blockType, IBlockPhysics blockPhysics)
         {
@@ -65,6 +62,16 @@ namespace Engine2.Core
                 gridPhysicsMap = new Dictionary<int, IBlockPhysics>();
 
             gridPhysicsMap[blockType] = blockPhysics;
+        }
+
+
+        public static List<GameActor> GetAllActors()
+        {
+            var l = new List<GameActor>();
+
+            actors.ForEach(a => l.Add(a));
+
+            return l;
         }
 
         public void AddActor(GameActor a)

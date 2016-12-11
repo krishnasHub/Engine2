@@ -21,9 +21,6 @@ namespace Engine2.Audio
         private SoundPlayer player;
         private bool isPlaying = false;
 
-        private uint volume;
-
-
         public void SetVolume(float vale)
         {
             int NewVolume = (int) ((ushort.MaxValue) * vale);
