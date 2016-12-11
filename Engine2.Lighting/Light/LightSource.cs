@@ -52,7 +52,19 @@ namespace Engine2.Lighting.Light
 
         ~LightSource()
         {
+            
+        }
+
+        private static List<LightName> validLightsourceNames = new List<LightName>();
+
+        public override void OnDestroyed()
+        {
+            base.OnDestroyed();
+
             LightSource.LightSourceCount--;
+            GL.Disable((EnableCap)LightName);
+
+            validLightsourceNames.Remove(LightName);
         }
 
         public static LightSource GetLightSource()
@@ -61,7 +73,19 @@ namespace Engine2.Lighting.Light
                 return null;
 
             var l = new LightSource();
-            l.LightName = LightName.Light0 + (LightSource.LightSourceCount - 1);
+            LightName name = LightName.Light0;
+
+            for (int i = 0; i <= validLightsourceNames.Count; ++i)
+            {
+                name = LightName.Light0 + i;
+
+                if (!validLightsourceNames.Contains(name))
+                    break;
+            }
+
+            l.LightName = name;
+
+            validLightsourceNames.Add(name);
 
             return l;
         }
@@ -130,6 +154,7 @@ namespace Engine2.Lighting.Light
 
             GL.Enable(EnableCap.Lighting);
             GL.Enable((EnableCap) LightName);
+
         }
 
         public override void Tick()

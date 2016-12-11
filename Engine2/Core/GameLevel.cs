@@ -340,7 +340,7 @@ namespace Engine2.Core
             if (a.PhysicsComponent != null)
 
                 // Get all colidable objects
-                actors.Where(c => c.IsCollidable).ToList().ForEach(b => 
+                actors.Where(c => c!= a && c.IsCollidable).ToList().ForEach(b => 
                 {
                     // If they have the same root actors, then don't colide.
                     bool checkCollision = false;
@@ -399,7 +399,8 @@ namespace Engine2.Core
                 {
                     if (this.CanActorMoveTo(a, a.Position + a.Velocity + LevelPhysics.GetGravityVector()))
                     {
-                        LevelPhysics.AddGravity(a);
+                        if(a.IsAffectedByGravity)
+                            LevelPhysics.AddGravity(a);
                         //a.InAir = true;
                     }
                     else

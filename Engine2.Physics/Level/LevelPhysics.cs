@@ -21,7 +21,8 @@ namespace Engine2.Physics.Level
         {
             foreach (var actor in actors)
             {
-                AddGravity(actor);
+                if(actor.IsAffectedByGravity)
+                    AddGravity(actor);
             }
         }
 

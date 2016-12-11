@@ -84,6 +84,7 @@ namespace Engine2.Actor
             get { return tileSheet; }
         }
 
+        public bool IsAffectedByGravity = true;
         protected bool isCollidable = true;
         protected Vector2 position;
         protected bool canInit = true;
@@ -107,6 +108,22 @@ namespace Engine2.Actor
         public PawnSensing GetPawnSensingComponent()
         {
             return PawnSensing;
+        }
+
+        public virtual void OnDestroyed()
+        {
+            // Do the needed cleanup..
+        }
+
+        public void MarkReadyToBeDestroyed()
+        {
+            this.ReadyToBeDestroyed = true;
+            foreach(var a in ChildActors)
+            {
+                a.MarkReadyToBeDestroyed();
+            }
+
+            OnDestroyed();
         }
 
         public virtual void PawnSensed(GameActor otherActor)

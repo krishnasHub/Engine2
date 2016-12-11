@@ -5,3 +5,4 @@ c:\users\krish\documents\visual studio 2015\Projects\Engine2\Engine2\obj\Debug\E
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\bin\Debug\Engine2.dll.config
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\bin\Debug\Engine2.dll
 C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.dll
+C:\Users\krish\Documents\Visual Studio 2015\Projects\Engine2\Engine2\obj\Debug\Engine2.csprojResolveAssemblyReference.cache
