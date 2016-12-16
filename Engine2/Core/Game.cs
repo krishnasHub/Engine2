@@ -52,9 +52,9 @@ namespace Engine2.Core
             level = gameLevel;
         }
 
-        public Game(int width, int height, float zoom = 1f, float rotation = 0f) : base(width, height)
+        public Game(string title, int width, int height, float zoom = 1f, float rotation = 0f) : base(width, height)
         {
-            Title = "New Game";
+            Title = title;
 
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
@@ -69,17 +69,19 @@ namespace Engine2.Core
 
         protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad(e);           
+            base.OnLoad(e);    
 
-            level.Init();
-
-            // Set the View to center on the level
-            if(level.BoundActor != null)
+            if(level != null)
             {
-                view.SetPosition(view.ToWorld(level.BoundActor.Position), TweenType.QuarticOut, Constants.TWEEN_SPEED);
-            }
+                level.Init();
 
-            //onShaderLoad();
+                // Set the View to center on the level
+                if (level.BoundActor != null)
+                {
+                    view.SetPosition(view.ToWorld(level.BoundActor.Position), TweenType.QuarticOut, Constants.TWEEN_SPEED);
+                }
+            }
+            
         }
 
         private void checkKeyEvents()
@@ -104,35 +106,40 @@ namespace Engine2.Core
         {
             base.OnUpdateFrame(e);
 
-            //UpdateShaderFrame();
-
-            view.Size = new Vector2(this.Width, this.Height);
-
-            if(GameInput.MouseButtonPress(OpenTK.Input.MouseButton.Left))
+            if(level != null)
             {
-                var pos = WorldSettings.TranslateFromScreenToGameCoords(new Vector2(Mouse.X, Mouse.Y));
-                view.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
-            }
+                view.Size = new Vector2(this.Width, this.Height);
+
+                if (GameInput.MouseButtonPress(OpenTK.Input.MouseButton.Left))
+                {
+                    var pos = WorldSettings.TranslateFromScreenToGameCoords(new Vector2(Mouse.X, Mouse.Y));
+                    view.SetPosition(pos, TweenType.QuarticOut, Constants.TWEEN_SPEED);
+                }
 
 
-            checkKeyEvents();
+                checkKeyEvents();
 
-            view.Update();
-            GameInput.Update();
-            level.Tick();
+                view.Update();
+                GameInput.Update();
+                level.Tick();
+            }            
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
 
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.ClearColor(BackgroundColor);
+            if(level != null)
+            {
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                GL.ClearColor(BackgroundColor);
 
-            SpriteBatch.Begin(this.Width, this.Height);
-            view.ApplyTransform();
+                SpriteBatch.Begin(this.Width, this.Height);
+                view.ApplyTransform();
 
-            level.Render();
+                level.Render();
+            }
+            
 
             this.SwapBuffers();
         }

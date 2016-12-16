@@ -24,7 +24,7 @@ namespace Engine2.Core
         public Vector2 ViewCenterPos;
         public GameActor BoundActor;
         protected Texture2D tileSet;
-        protected static List<GameActor> actors;
+        protected static List<GameActor> actors = new List<GameActor>();
         protected Vector2 tileSize;
         protected int blocksInRow;
         protected Dictionary<int, IBlockPhysics> gridPhysicsMap;
@@ -290,6 +290,9 @@ namespace Engine2.Core
             for (int x = xl; x <= xr; x++)
                 for (int y = yl; y <= yr; y++)
                 {
+                    if (x >= Width || y >= Height || x < 0 || y < 0)
+                        continue;
+
                     if (!gridPhysicsMap.ContainsKey(this[x, y].Type))
                         continue;
 

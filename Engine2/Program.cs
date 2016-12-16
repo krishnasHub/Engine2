@@ -20,7 +20,7 @@ namespace Engine2
     {
         static void Main(string[] args)
         {
-            var g = new Game(1280, 960);
+            var g = new Game("New Game", 1280, 960);
             // tile_wall.jpg
 
             g.Run();
